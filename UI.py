@@ -77,10 +77,10 @@ class MyFrame ( wx.Frame ):
 
 		fgSizer2.Add( self.m_staticText51, 0, wx.ALL, 5 )
 
-		m_choice1Choices = [ u"小端模式", u"大端模式" ]
-		self.m_choice1 = wx.Choice( parse_boxsizer.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, m_choice1Choices, 0 )
-		self.m_choice1.SetSelection( 1 )
-		fgSizer2.Add( self.m_choice1, 0, wx.ALL, 5 )
+		parse_choiceChoices = [ u"小端模式", u"大端模式" ]
+		self.parse_choice = wx.Choice( parse_boxsizer.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, parse_choiceChoices, 0 )
+		self.parse_choice.SetSelection( 1 )
+		fgSizer2.Add( self.parse_choice, 0, wx.ALL, 5 )
 
 		self.m_staticText9 = wx.StaticText( parse_boxsizer.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText9.Wrap( -1 )
@@ -123,7 +123,6 @@ class MyFrame ( wx.Frame ):
 		fgSizer2.Add( self.m_textCtrl9, 5, wx.ALL, 5 )
 
 		self.m_checkBox1 = wx.CheckBox( parse_boxsizer.GetStaticBox(), wx.ID_ANY, u"循环解析", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_checkBox1.SetValue(True)
 		fgSizer2.Add( self.m_checkBox1, 0, wx.ALL, 5 )
 
 
@@ -148,10 +147,10 @@ class MyFrame ( wx.Frame ):
 
 		sbSizer63.Add( self.m_staticText93, 0, wx.ALL, 5 )
 
-		m_choice4Choices = [ u"excel文件", u"文本文件", u"excel文件" ]
-		self.m_choice4 = wx.Choice( sbSizer63.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, m_choice4Choices, 0 )
-		self.m_choice4.SetSelection( 2 )
-		sbSizer63.Add( self.m_choice4, 0, wx.ALL, 5 )
+		output_choiceChoices = [ u"excel文件", u"文本文件", u"excel文件" ]
+		self.output_choice = wx.Choice( sbSizer63.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, output_choiceChoices, 0 )
+		self.output_choice.SetSelection( 0 )
+		sbSizer63.Add( self.output_choice, 0, wx.ALL, 5 )
 
 
 		total_boxsizer1.Add( sbSizer63, 1, wx.EXPAND, 5 )
@@ -201,7 +200,15 @@ class MyFrame ( wx.Frame ):
 
 		self.Centre( wx.BOTH )
 
+		# Connect Events
+		self.parse_choice.Bind( wx.EVT_CHOICE, self.parse_choise_selected )
+
 	def __del__( self ):
 		pass
+
+
+	# Virtual event handlers, overide them in your derived class
+	def parse_choise_selected( self, event ):
+		event.Skip()
 
 
