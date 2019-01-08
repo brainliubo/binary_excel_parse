@@ -17,7 +17,7 @@ import wx.xrc
 class MyFrame ( wx.Frame ):
 
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"binary_excel_parse", pos = wx.DefaultPosition, size = wx.Size( 500,300 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"binary_excel_parse", pos = wx.DefaultPosition, size = wx.Size( 648,383 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 		self.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_3DLIGHT ) )
@@ -26,37 +26,37 @@ class MyFrame ( wx.Frame ):
 
 		total_boxsizer = wx.BoxSizer( wx.VERTICAL )
 
-		excel_file_boxsizer = wx.GridSizer( 0, 3, 0, 0 )
+		excel_sizer = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, wx.EmptyString ), wx.HORIZONTAL )
 
-		self.excel_statictext = wx.StaticText( self, wx.ID_ANY, u"excel路径", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.excel_statictext = wx.StaticText( excel_sizer.GetStaticBox(), wx.ID_ANY, u"excel file", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.excel_statictext.Wrap( -1 )
 
-		excel_file_boxsizer.Add( self.excel_statictext, 0, wx.ALL, 5 )
+		excel_sizer.Add( self.excel_statictext, 0, wx.ALL, 5 )
 
-		self.excel_filePicker = wx.FilePickerCtrl( self, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.*", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
-		excel_file_boxsizer.Add( self.excel_filePicker, 0, wx.ALL, 5 )
+		self.excel_filePicker = wx.FilePickerCtrl( excel_sizer.GetStaticBox(), wx.ID_ANY, u"C:\\Users\\brain.liu\\Desktop\\256QAM 星座点.xlsx", u"Select a file", u"*.xls;*.xlsx", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		excel_sizer.Add( self.excel_filePicker, 10, wx.ALL, 5 )
 
-		self.excel_check_button = wx.Button( self, wx.ID_ANY, u"excel_check", wx.DefaultPosition, wx.DefaultSize, 0 )
-		excel_file_boxsizer.Add( self.excel_check_button, 0, wx.ALL, 5 )
-
-
-		total_boxsizer.Add( excel_file_boxsizer, 1, wx.EXPAND, 5 )
-
-		binary_file_boxsizer = wx.GridSizer( 0, 3, 0, 0 )
-
-		self.binary_statictext1 = wx.StaticText( self, wx.ID_ANY, u"binary路径", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.binary_statictext1.Wrap( -1 )
-
-		binary_file_boxsizer.Add( self.binary_statictext1, 0, wx.ALL, 5 )
-
-		self.binary_filePicker = wx.FilePickerCtrl( self, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.*", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
-		binary_file_boxsizer.Add( self.binary_filePicker, 0, wx.ALL, 5 )
-
-		self.binary_check_button = wx.Button( self, wx.ID_ANY, u"binary_check", wx.DefaultPosition, wx.DefaultSize, 0 )
-		binary_file_boxsizer.Add( self.binary_check_button, 0, wx.ALL, 5 )
+		self.excel_check_button = wx.Button( excel_sizer.GetStaticBox(), wx.ID_ANY, u"check", wx.DefaultPosition, wx.DefaultSize, 0 )
+		excel_sizer.Add( self.excel_check_button, 3, wx.ALL, 5 )
 
 
-		total_boxsizer.Add( binary_file_boxsizer, 1, wx.EXPAND, 5 )
+		total_boxsizer.Add( excel_sizer, 1, wx.EXPAND, 5 )
+
+		binary_sizer = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, wx.EmptyString ), wx.HORIZONTAL )
+
+		self.excel_statictext1 = wx.StaticText( binary_sizer.GetStaticBox(), wx.ID_ANY, u"binary file", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.excel_statictext1.Wrap( -1 )
+
+		binary_sizer.Add( self.excel_statictext1, 0, wx.ALL, 5 )
+
+		self.binay_filePicker = wx.FilePickerCtrl( binary_sizer.GetStaticBox(), wx.ID_ANY, u"C:\\Users\\brain.liu\\Desktop\\256QAM 星座点.xlsx", u"Select a file", u"*.dat;*.bin", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		binary_sizer.Add( self.binay_filePicker, 10, wx.ALL, 5 )
+
+		self.binary_check_button = wx.Button( binary_sizer.GetStaticBox(), wx.ID_ANY, u"check", wx.DefaultPosition, wx.DefaultSize, 0 )
+		binary_sizer.Add( self.binary_check_button, 3, wx.ALL, 5 )
+
+
+		total_boxsizer.Add( binary_sizer, 1, wx.EXPAND, 5 )
 
 
 		bSizer1.Add( total_boxsizer, 1, wx.EXPAND, 5 )
