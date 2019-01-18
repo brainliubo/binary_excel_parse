@@ -1,6 +1,8 @@
 import wx
 import UI
 import xlwings
+import excel_process  as EP
+import os
 
 class myframe(UI.MyFrame):
     def parse_choise_selected( self, event ):
@@ -22,6 +24,25 @@ class myframe(UI.MyFrame):
             #输出文本文件
             self.output_log_textctrl.Enable()
             self.output_excel_textctrl.Disable()
+    def excel_check( self, event ):
+        excel_file = EP.excel_item(self.excel_filePicker.GetPath())
+        excel_dict = {}
+        excel_file.read_sheet(0)
+
+        excel_file.format_check(excel_file.sheet, 1, 1)
+
+        excel_dict = excel_file.sheet_cell_process(excel_file.sheet)
+
+        for item in excel_dict:
+            print(item)
+
+    def  binary_file_read(self,event):
+        self.binary_file_size_textctrl.Value = str(os.path.getsize( self.binay_filePicker.GetPath()))
+
+
+
+
+
 
 if __name__ == "__main__":
     app = wx.App()

@@ -14,7 +14,7 @@ class excel_item(object):
         self.row_offset = 0    #开始读取时的row offset
         self.column_offset = 0 # 开始读取时的column offset
     #检查excel的格式是否符合预期
-    def read(self,sheet_index):
+    def read_sheet(self,sheet_index):
         app = XL.App(visible=True,add_book=False)
         self.wb = app.books.open(self.path)
         self.sheet = self.wb.sheets[sheet_index] # EXCEL的sheet可以通过excel指定来解析
@@ -121,9 +121,11 @@ class excel_item(object):
 
 
 
+'''
+
 
 excel_item = excel_item(r"dp_cc_reg.xlsx")
-excel_item.read(0)
+excel_item.sheet_read(0)
 
 excel_item.format_check(excel_item.sheet,1,1)
 
@@ -135,6 +137,6 @@ excel_item.sheet_cell_process(excel_item.sheet)
 
 
 excel_item.close(excel_item.wb)
-
+'''
 
 
