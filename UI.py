@@ -33,8 +33,8 @@ class MyFrame ( wx.Frame ):
 
 		excel_sizer1.Add( self.m_staticText46, 0, wx.ALL, 5 )
 
-		self.excel_filePicker1 = wx.FilePickerCtrl( excel_sizer1.GetStaticBox(), wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.xls;*.xlsx", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
-		excel_sizer1.Add( self.excel_filePicker1, 10, wx.ALL, 5 )
+		self.excel_filePicker = wx.FilePickerCtrl( excel_sizer1.GetStaticBox(), wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.xls;*.xlsx", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		excel_sizer1.Add( self.excel_filePicker, 10, wx.ALL, 5 )
 
 		self.excel_check_button = wx.Button( excel_sizer1.GetStaticBox(), wx.ID_ANY, u"格式检查", wx.DefaultPosition, wx.DefaultSize, 0 )
 		excel_sizer1.Add( self.excel_check_button, 0, wx.ALL, 5 )
@@ -88,8 +88,8 @@ class MyFrame ( wx.Frame ):
 
 		binary_sizer.Add( self.excel_statictext1, 0, wx.ALL, 5 )
 
-		self.binay_filePicker = wx.FilePickerCtrl( binary_sizer.GetStaticBox(), wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.dat;*.bin", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
-		binary_sizer.Add( self.binay_filePicker, 10, wx.ALL, 5 )
+		self.binary_filePicker = wx.FilePickerCtrl( binary_sizer.GetStaticBox(), wx.ID_ANY, u"D:\\git_clone\\small_tools_develop\\asic_reg_parse\\test_asic_reg.bin", u"Select a file", u"*.dat;*.bin", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		binary_sizer.Add( self.binary_filePicker, 10, wx.ALL, 5 )
 
 		self.binary_check_button = wx.Button( binary_sizer.GetStaticBox(), wx.ID_ANY, u"参数检查", wx.DefaultPosition, wx.DefaultSize, 0 )
 		binary_sizer.Add( self.binary_check_button, 0, wx.ALL, 5 )
@@ -257,12 +257,13 @@ class MyFrame ( wx.Frame ):
 		self.Centre( wx.BOTH )
 
 		# Connect Events
-		self.excel_filePicker1.Bind( wx.EVT_FILEPICKER_CHANGED, self.excel_file_select )
+		self.excel_filePicker.Bind( wx.EVT_FILEPICKER_CHANGED, self.excel_file_select )
 		self.excel_check_button.Bind( wx.EVT_BUTTON, self.excel_check )
 		self.sheet_textCtrl.Bind( wx.EVT_TEXT, self.excel_check_button_process )
 		self.startrow_textCtrl.Bind( wx.EVT_TEXT, self.excel_check_button_process )
 		self.endrow_textCtrl.Bind( wx.EVT_TEXT, self.excel_check_button_process )
-		self.binay_filePicker.Bind( wx.EVT_FILEPICKER_CHANGED, self.binary_file_select )
+		self.binary_filePicker.Bind( wx.EVT_FILEPICKER_CHANGED, self.binary_file_select )
+		self.binary_check_button.Bind( wx.EVT_BUTTON, self.binary_check )
 		self.parse_choice.Bind( wx.EVT_CHOICE, self.parse_choise_selected )
 		self.parse_length_textCtrl.Bind( wx.EVT_TEXT, self.binary_check_button_process )
 		self.parse_number_textCtrl.Bind( wx.EVT_TEXT, self.binary_check_button_process )
@@ -288,6 +289,9 @@ class MyFrame ( wx.Frame ):
 
 
 	def binary_file_select( self, event ):
+		event.Skip()
+
+	def binary_check( self, event ):
 		event.Skip()
 
 	def parse_choise_selected( self, event ):
