@@ -104,7 +104,7 @@ class MyFrame ( wx.Frame ):
 		self.m_staticText22 = wx.StaticText( parse_boxsizer.GetStaticBox(), wx.ID_ANY, u"二进制文件大小", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText22.Wrap( -1 )
 
-		fgSizer2.Add( self.m_staticText22, 0, wx.ALL, 5 )
+		fgSizer2.Add( self.m_staticText22, 0, wx.ALL|wx.EXPAND, 5 )
 
 		self.binary_file_size_textctrl = wx.TextCtrl( parse_boxsizer.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_PROCESS_ENTER )
 		fgSizer2.Add( self.binary_file_size_textctrl, 1, wx.ALL, 5 )
