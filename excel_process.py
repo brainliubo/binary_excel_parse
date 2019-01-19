@@ -99,12 +99,12 @@ class excel_item(object):
 
         return cell_item
 
-    def sheet_cell_process(self,sheet):
+    def sheet_cell_process(self,sheet,start_row,end_row):
         #cell_item_list = [ ]
         cell_item_dict = { } #存放在 dict 中
         end_row_flag = False
-        row = 2
-        while row < 100:
+        row = start_row
+        while row < end_row:
             cell_item = self.sheet_cell_read(sheet,row,1)
             row = row + cell_item.cell_merge_row_num  # 更新，
             #cell_item_list.append(cell_item)

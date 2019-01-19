@@ -24,6 +24,10 @@ class myframe(UI.MyFrame):
             #输出文本文件
             self.output_log_textctrl.Enable()
             self.output_excel_textctrl.Disable()
+    def excel_file_select(self,event):
+        self.excel_check_button.Disable()
+
+
     def excel_check( self, event ):
         excel_file = EP.excel_item(self.excel_filePicker.GetPath())
         excel_dict = {}
@@ -36,12 +40,29 @@ class myframe(UI.MyFrame):
         for item in excel_dict:
             print(item)
 
-    def  binary_file_read(self,event):
+    def  binary_file_select( self, event ):
         self.binary_file_size_textctrl.Value = str(os.path.getsize( self.binay_filePicker.GetPath()))
+        self.binary_check_button.Disable()
 
+    def excel_check_button_process( self, event ):
+        if ((self.sheet_textCtrl.GetValue() != "") and (self.startrow_textCtrl.GetValue() != "")
+             and (self.endrow_textCtrl.GetValue()!= "")):
+            self.excel_check_button.Enable()
+        else:
+            self.excel_check_button.Disable()
 
+    def binary_check_button_process( self, event ):
+        if ((self.parse_length_textCtrl.GetValue() != "") and (self.parse_number_textCtrl.GetValue() != "")):
+            self.binary_check_button.Enable()
+            temp_value = int(self.binary_file_size_textctrl.GetValue()) // int(self.parse_length_textCtrl.GetValue())
+            temp_value = temp_value // int(self.parse_number_textCtrl.GetValue())
+            self.max_loop_textCtrl.SetValue(str(temp_value))
+            self.max_loop_textCtrl.Disable()
 
-
+        else:
+            self.binary_check_button.Disable()
+            self.max_loop_textCtrl.Enable()
+            self.max_loop_textCtrl.Clear()
 
 
 if __name__ == "__main__":
