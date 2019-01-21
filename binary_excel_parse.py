@@ -39,7 +39,7 @@ class myframe(UI.MyFrame):
         self.binary_file_size_textctrl.Value = str(os.path.getsize( self.binary_filePicker.GetPath()))
         #disable button ,clear the textctrl's content
         self.binary_check_button.Disable()
-        self.parse_length_textCtrl.Clear()
+        self.parse_unit_choice.SetString(0,"")
         self.parse_number_textCtrl.Clear()
         self.loop_textctrl.Clear()
         self.max_loop_textCtrl.Clear()
@@ -58,9 +58,10 @@ class myframe(UI.MyFrame):
     binary button 的使能和去使能
     '''
     def binary_check_button_process( self, event ):
-        if ((self.parse_length_textCtrl.GetValue() != "") and (self.parse_number_textCtrl.GetValue() != "")):
+        index = self.parse_unit_choice.GetSelection()
+        if ((self.parse_unit_choice.GetString(index)!= "") and (self.parse_number_textCtrl.GetValue() != "")):
             self.binary_check_button.Enable()
-            temp_value = int(self.binary_file_size_textctrl.GetValue()) // int(self.parse_length_textCtrl.GetValue())
+            temp_value = int(self.binary_file_size_textctrl.GetValue()) // (int(self.parse_unit_choice.GetString(index)) //8)
             temp_value = temp_value // int(self.parse_number_textCtrl.GetValue())
             self.max_loop_textCtrl.SetValue(str(temp_value))
             self.max_loop_textCtrl.Disable()

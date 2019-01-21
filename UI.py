@@ -134,10 +134,12 @@ class MyFrame ( wx.Frame ):
 
 		fgSizer2.Add( self.m_staticText68, 0, wx.ALL, 5 )
 
-		self.parse_length_textCtrl = wx.TextCtrl( parse_boxsizer.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_PROCESS_ENTER )
-		fgSizer2.Add( self.parse_length_textCtrl, 5, wx.ALL, 5 )
+		parse_unit_choiceChoices = [ u" ", u"8", u"16", u"32", u"64", u"96", u"128", u"192", u"256", wx.EmptyString, wx.EmptyString ]
+		self.parse_unit_choice = wx.Choice( parse_boxsizer.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, parse_unit_choiceChoices, 0 )
+		self.parse_unit_choice.SetSelection( 0 )
+		fgSizer2.Add( self.parse_unit_choice, 1, wx.ALL|wx.EXPAND, 5 )
 
-		self.m_staticText34 = wx.StaticText( parse_boxsizer.GetStaticBox(), wx.ID_ANY, u"uint:byte", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText34 = wx.StaticText( parse_boxsizer.GetStaticBox(), wx.ID_ANY, u"uint:bit", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText34.Wrap( -1 )
 
 		fgSizer2.Add( self.m_staticText34, 2, wx.ALL, 5 )
@@ -265,7 +267,7 @@ class MyFrame ( wx.Frame ):
 		self.binary_filePicker.Bind( wx.EVT_FILEPICKER_CHANGED, self.binary_file_select )
 		self.binary_check_button.Bind( wx.EVT_BUTTON, self.binary_check )
 		self.parse_choice.Bind( wx.EVT_CHOICE, self.parse_choise_selected )
-		self.parse_length_textCtrl.Bind( wx.EVT_TEXT, self.binary_check_button_process )
+		self.parse_unit_choice.Bind( wx.EVT_CHOICE, self.binary_check_button_process )
 		self.parse_number_textCtrl.Bind( wx.EVT_TEXT, self.binary_check_button_process )
 		self.loop_checkBox.Bind( wx.EVT_CHECKBOX, self.loop_parse_check )
 		self.output_choice.Bind( wx.EVT_CHOICE, self.output_choice_select )
