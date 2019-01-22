@@ -24,26 +24,31 @@ class  Binary_File(object):
         self.loop_parse_flag = False
         self.path = path
 
-    def Binary_file_read(self,unit_byte, unit_number,loop_flag, loop_number):
+    def Binary_file_read(self,unit_bit, unit_number,loop_flag, loop_number):
         #确认要读取的字节长度
         if loop_flag == True:
-            read_num = unit_number * loop_number
+            read_num = int(unit_number) * int(loop_number)
         else:
-            read_num= unit_number
-
+            read_num= int(unit_number)
+        parse_byte = int(unit_bit) // 8 #byte 个数
+        data_dict = {}
         with open(self.path,"rb") as f_p:
             for read_idx in range(read_num):
                 temp_data_addr = f_p.tell() #得到数据的起始位置
-                temp_data = f_p.read(unit_byte)
-                print(temp_data)
+                temp_data = f_p.read(parse_byte)
                 print(temp_data_addr)
+                print(temp_data)
+                data_dict[temp_data_addr] = temp_data
+        return  data_dict
 
 
 
-b_file = Binary_File(r"D:\git_clone\small_tools_develop\binary_excel_parse_git\binary_excel_parse\test_asic_reg.bin")
-b_file.Binary_file_read(32,2,True,4)
-
-
+'''
+if __name__ == "__main__":
+    b_file = Binary_File(r"D:\git_clone\small_tools_develop\binary_excel_parse_git\binary_excel_parse\test_asic_reg.bin")
+    data_dict = b_file.Binary_file_read(32,2,True,4)
+    pass
+'''
 
 
 

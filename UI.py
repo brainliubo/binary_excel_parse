@@ -88,7 +88,7 @@ class MyFrame ( wx.Frame ):
 
 		binary_sizer.Add( self.excel_statictext1, 0, wx.ALL, 5 )
 
-		self.binary_filePicker = wx.FilePickerCtrl( binary_sizer.GetStaticBox(), wx.ID_ANY, u"D:\\git_clone\\small_tools_develop\\asic_reg_parse\\test_asic_reg.bin", u"Select a file", u"*.dat;*.bin", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		self.binary_filePicker = wx.FilePickerCtrl( binary_sizer.GetStaticBox(), wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.dat;*.bin", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		binary_sizer.Add( self.binary_filePicker, 10, wx.ALL, 5 )
 
 		self.binary_check_button = wx.Button( binary_sizer.GetStaticBox(), wx.ID_ANY, u"参数检查", wx.DefaultPosition, wx.DefaultSize, 0 )

@@ -3,6 +3,7 @@ import UI
 import xlwings
 import excel_process  as EP
 import os
+from  reg_class import Binary_File
 
 class myframe(UI.MyFrame):
     def parse_choise_selected( self, event ):
@@ -94,6 +95,13 @@ class myframe(UI.MyFrame):
             dlg.Destroy()
 
     def binary_check(self,event):
+        b_file = Binary_File(self.binary_filePicker.GetPath())
+        index = self.parse_unit_choice.GetSelection()
+
+        data_dict = b_file.Binary_file_read(self.parse_unit_choice.GetString(index),
+                                            self.parse_number_textCtrl.Value,
+                                            self.loop_checkBox.IsChecked(),
+                                            self.loop_textctrl.Value)
         pass
 
 
