@@ -51,8 +51,10 @@ class MyFrame ( wx.Frame ):
 
 		bSizer41.Add( self.sheet_staticText1, 0, wx.ALL, 5 )
 
-		self.sheet_textCtrl = wx.TextCtrl( excel_boxsizer.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_PROCESS_ENTER )
-		bSizer41.Add( self.sheet_textCtrl, 1, wx.ALL, 5 )
+		sheet_choiceChoices = [ wx.EmptyString, wx.EmptyString, u" ", u" ", u" ", wx.EmptyString, wx.EmptyString, wx.EmptyString ]
+		self.sheet_choice = wx.Choice( excel_boxsizer.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, sheet_choiceChoices, 0 )
+		self.sheet_choice.SetSelection( 0 )
+		bSizer41.Add( self.sheet_choice, 1, wx.ALL, 5 )
 
 		self.row_start_staticText1 = wx.StaticText( excel_boxsizer.GetStaticBox(), wx.ID_ANY, u"start_row", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.row_start_staticText1.Wrap( -1 )
@@ -134,7 +136,7 @@ class MyFrame ( wx.Frame ):
 
 		fgSizer2.Add( self.m_staticText68, 0, wx.ALL, 5 )
 
-		parse_unit_choiceChoices = [ u" ", u"8", u"16", u"32", u"64", u"96", u"128", u"192", u"256", wx.EmptyString, wx.EmptyString ]
+		parse_unit_choiceChoices = [ u" ", u"32", u"64", u"96", u"128", u"192", u"256", wx.EmptyString, wx.EmptyString ]
 		self.parse_unit_choice = wx.Choice( parse_boxsizer.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, parse_unit_choiceChoices, 0 )
 		self.parse_unit_choice.SetSelection( 0 )
 		fgSizer2.Add( self.parse_unit_choice, 1, wx.ALL|wx.EXPAND, 5 )
@@ -167,6 +169,7 @@ class MyFrame ( wx.Frame ):
 		fgSizer2.Add( self.loop_textctrl, 5, wx.ALL, 5 )
 
 		self.loop_checkBox = wx.CheckBox( parse_boxsizer.GetStaticBox(), wx.ID_ANY, u"循环解析", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.loop_checkBox.SetValue(True)
 		fgSizer2.Add( self.loop_checkBox, 0, wx.ALL, 5 )
 
 		self.m_staticText33 = wx.StaticText( parse_boxsizer.GetStaticBox(), wx.ID_ANY, u"循环最大次数", wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -261,7 +264,7 @@ class MyFrame ( wx.Frame ):
 		# Connect Events
 		self.excel_filePicker.Bind( wx.EVT_FILEPICKER_CHANGED, self.excel_file_select )
 		self.excel_check_button.Bind( wx.EVT_BUTTON, self.excel_check )
-		self.sheet_textCtrl.Bind( wx.EVT_TEXT, self.excel_check_button_process )
+		self.sheet_choice.Bind( wx.EVT_CHOICE, self.excel_check_button_process )
 		self.startrow_textCtrl.Bind( wx.EVT_TEXT, self.excel_check_button_process )
 		self.endrow_textCtrl.Bind( wx.EVT_TEXT, self.excel_check_button_process )
 		self.binary_filePicker.Bind( wx.EVT_FILEPICKER_CHANGED, self.binary_file_select )

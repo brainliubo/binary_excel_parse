@@ -14,9 +14,12 @@ class excel_item(object):
         self.row_offset = 0    #开始读取时的row offset
         self.column_offset = 0 # 开始读取时的column offset
     #检查excel的格式是否符合预期
-    def read_sheet(self,sheet_index):
+    def excel_open(self):
         app = XL.App(visible=True,add_book=False)
+        app = XL.App(visible=True, add_book=False)
         self.wb = app.books.open(self.path)
+        return self.wb.sheets
+    def read_sheet(self,sheet_index):
         self.sheet = self.wb.sheets[sheet_index] # EXCEL的sheet可以通过excel指定来解析
 
     def write(self,path):

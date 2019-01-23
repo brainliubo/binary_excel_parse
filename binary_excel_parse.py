@@ -4,6 +4,8 @@ import xlwings
 import excel_process  as EP
 import os
 from  reg_class import Binary_File
+global excel_file
+
 
 class myframe(UI.MyFrame):
     def parse_choise_selected( self, event ):
@@ -31,9 +33,19 @@ class myframe(UI.MyFrame):
     def excel_file_select(self,event):
         self.excel_check_button.Disable()
         # disable button ,clear the textctrl's content
-        self.sheet_textCtrl.Clear()
+
         self.startrow_textCtrl.Clear()
         self.endrow_textCtrl.Clear()
+
+        # 设置choice的sheet
+        excel_file = EP.excel_item(self.excel_filePicker.GetPath())
+        sheet_list = excel_file.excel_open()
+        i = 0
+        for item in sheet_list:
+            print(item.name)
+            self.sheet_choice.SetString(i,str(item.name))
+            i = i+1
+        print(type(sheet_list))
 
 
     def  binary_file_select( self, event ):
@@ -45,11 +57,15 @@ class myframe(UI.MyFrame):
         self.loop_textctrl.Clear()
         self.max_loop_textCtrl.Clear()
 
+
+
     '''
     excel check button的使能和去使能
     '''
     def excel_check_button_process( self, event ):
-        if ((self.sheet_textCtrl.GetValue() != "") and (self.startrow_textCtrl.GetValue() != "")
+        index = self.sheet_choice.GetSelection()
+        print(self.sheet_choice.GetString(index))
+        if ((self.sheet_choice.GetString(index) != "") and (self.startrow_textCtrl.GetValue() != "")
              and (self.endrow_textCtrl.GetValue()!= "")):
             self.excel_check_button.Enable()
         else:
@@ -76,7 +92,7 @@ class myframe(UI.MyFrame):
     excel check button 按下的handler function
     '''
     def excel_check( self, event ):
-        excel_file = EP.excel_item(self.excel_filePicker.GetPath())
+        global excel_file
         excel_dict = {}
         excel_file.read_sheet(0)
 
