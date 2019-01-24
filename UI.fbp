@@ -885,7 +885,7 @@
                                         <property name="minimize_button">0</property>
                                         <property name="minimum_size"></property>
                                         <property name="moveable">1</property>
-                                        <property name="name">binary_check_button</property>
+                                        <property name="name">parse_check_button</property>
                                         <property name="pane_border">1</property>
                                         <property name="pane_position"></property>
                                         <property name="pane_size"></property>
@@ -1216,7 +1216,7 @@
                                         <property name="minimize_button">0</property>
                                         <property name="minimum_size"></property>
                                         <property name="moveable">1</property>
-                                        <property name="name">parse_choice</property>
+                                        <property name="name">ending_choice</property>
                                         <property name="pane_border">1</property>
                                         <property name="pane_position"></property>
                                         <property name="pane_size"></property>
@@ -1819,7 +1819,7 @@
                                         <property name="caption"></property>
                                         <property name="caption_visible">1</property>
                                         <property name="center_pane">0</property>
-                                        <property name="checked">1</property>
+                                        <property name="checked">0</property>
                                         <property name="close_button">1</property>
                                         <property name="context_help"></property>
                                         <property name="context_menu">1</property>
@@ -2645,8 +2645,9 @@
                         <property name="Save">0</property>
                         <property name="Yes">0</property>
                         <property name="minimum_size"></property>
-                        <property name="name">apply</property>
+                        <property name="name">apply_button_boxsizer</property>
                         <property name="permission">protected</property>
+                        <event name="OnApplyButtonClick">apply_parse_function</event>
                     </object>
                 </object>
             </object>

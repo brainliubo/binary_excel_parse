@@ -5,11 +5,11 @@ import excel_process  as EP
 import os
 from  reg_class import Binary_File
 global excel_file
+global data_dict
+global excel_dict
 
 
 class myframe(UI.MyFrame):
-    def parse_choise_selected( self, event ):
-        print(self.parse_choice.GetStringSelection())
     def output_excel_changed( self, event ):
         self.excel_output_textctrl.Value = self.output_excel_filePicker.GetPath()
     def loop_parse_check( self, event ):
@@ -28,10 +28,11 @@ class myframe(UI.MyFrame):
             self.output_log_textctrl.Enable()
             self.output_excel_textctrl.Disable()
     '''
-    文件选择时的处理
+    文件选择时的处理,打开excel，并读取sheet的name,填入sheet_choice
     '''
     def excel_file_select(self,event):
-        self.excel_check_button.Disable()
+        global excel_file
+
         # disable button ,clear the textctrl's content
 
         self.startrow_textCtrl.Clear()
@@ -51,7 +52,7 @@ class myframe(UI.MyFrame):
     def  binary_file_select( self, event ):
         self.binary_file_size_textctrl.Value = str(os.path.getsize( self.binary_filePicker.GetPath()))
         #disable button ,clear the textctrl's content
-        self.binary_check_button.Disable()
+        self.parse_check_button.Disable()
         self.parse_unit_choice.SetString(0,"")
         self.parse_number_textCtrl.Clear()
         self.loop_textctrl.Clear()
@@ -77,30 +78,32 @@ class myframe(UI.MyFrame):
     def binary_check_button_process( self, event ):
         index = self.parse_unit_choice.GetSelection()
         if ((self.parse_unit_choice.GetString(index)!= "") and (self.parse_number_textCtrl.GetValue() != "")):
-            self.binary_check_button.Enable()
+            self.parse_check_button.Enable()
             temp_value = int(self.binary_file_size_textctrl.GetValue()) // (int(self.parse_unit_choice.GetString(index)) //8)
             temp_value = temp_value // int(self.parse_number_textCtrl.GetValue())
             self.max_loop_textCtrl.SetValue(str(temp_value))
             self.max_loop_textCtrl.Disable()
 
         else:
-            self.binary_check_button.Disable()
+            self.parse_check_button.Disable()
             self.max_loop_textCtrl.Enable()
             self.max_loop_textCtrl.Clear()
 
     '''
     excel check button 按下的handler function
     '''
-    def excel_check( self, event ):
+    def excel_check( self, event):
         global excel_file
-        excel_dict = {}
-        excel_file.read_sheet(0)
+        global excel_dict
+
+        excel_file.read_sheet(self.sheet_choice.GetCurrentSelection())
 
         excel_file.format_check(excel_file.sheet, 1, 1)
         if (excel_file.sheet_valid):
             excel_dict = excel_file.sheet_cell_process(excel_file.sheet,
                                                     int(self.startrow_textCtrl.Value),
                                                     int(self.endrow_textCtrl.Value))
+
             dlg = wx.MessageDialog(None, "excel 文件格式正确")
             retCode = dlg.ShowModal()
             dlg.Destroy()
@@ -111,13 +114,27 @@ class myframe(UI.MyFrame):
             dlg.Destroy()
 
     def binary_check(self,event):
+        global  data_dict
+        #step1: 检查应该设置的值是否正确设置了
+
+        #step2: 如果都设置了，则进行二进制文件的读取和解析
         b_file = Binary_File(self.binary_filePicker.GetPath())
         index = self.parse_unit_choice.GetSelection()
 
-        data_dict = b_file.Binary_file_read(self.parse_unit_choice.GetString(index),
+        data_dict = b_file.Binary_file_read_and_unpack(self.parse_unit_choice.GetString(index),
                                             self.parse_number_textCtrl.Value,
                                             self.loop_checkBox.IsChecked(),
-                                            self.loop_textctrl.Value)
+                                            self.loop_textctrl.Value,
+                                            self.ending_choice.GetCurrentSelection())
+        pass
+
+
+    '''
+    apply button 的解析主处理函数
+    '''
+    def apply_parse_function( self, event ):
+        global excel_file
+        global data_dict
         pass
 
 

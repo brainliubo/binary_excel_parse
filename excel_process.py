@@ -73,6 +73,8 @@ class excel_item(object):
 
         # 读取一行的元素，填写class
         for index in range(Reg_Class.reg_filed_num):
+            print( sheet.range((row, col + index)).value)
+            print(type( sheet.range((row, col + index)).value))
             cell_item.__dict__[Reg_Class.field_name_list[index]] = sheet.range((row, col + index)).value
 
         #判断行合并的情况

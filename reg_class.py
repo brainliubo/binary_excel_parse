@@ -8,7 +8,8 @@ class  Reg_Class():
         self.cell_merge_flag = 0   #cell 是否Merge
         self.cell_merge_col_num = 0   #cell merge 的行列数
         self.cell_merge_row_num = 0
-        self.cell_merge_bit_list= []
+        self.cell_merge_bit_list= []  #寄存器中包含的各个位段的bit 起始位置和结束位置
+        self.cell_parse_result_list = [] #寄存器中包含的各个位段的解析结果存放队列
     @classmethod  # 定义类方法,类方法的第一个参数是cls
     def add_attr(cls,attr_name,value):
         setattr(cls,attr_name,value)
@@ -32,6 +33,11 @@ class  Binary_File(object):
     并且根据总的bit长度，和大小端模式，确定是否需要地址倒序
     '''
     def Binary_file_read_and_unpack(self,unit_bit, unit_number,loop_flag, loop_number,ending_mode):
+
+        if (ending_mode == 0): #小端模式
+            ending_mode_str = "<"
+        else:
+            ending_mode_str = ">"
         #确认要读取的字节长度
         if loop_flag == True:
             read_num = int(unit_number) * int(loop_number)
@@ -39,7 +45,7 @@ class  Binary_File(object):
             read_num= int(unit_number)
         parse_byte = int(unit_bit) // 8 #byte 个数
         unpack_int_number = str(parse_byte // 4)
-        unpack_pattern = ending_mode + unpack_int_number + "I"
+        unpack_pattern = ending_mode_str + unpack_int_number + "I"
         print("unpack pattern = %s" %unpack_pattern)
         data_dict = {}
         with open(self.path,"rb") as f_p:
@@ -69,12 +75,12 @@ class  Binary_File(object):
 
 
 
-
+'''
 if __name__ == "__main__":
     b_file = Binary_File(r"D:\git_clone\small_tools_develop\binary_excel_parse_git\binary_excel_parse\test_asic_reg.bin")
     data_dict = b_file.Binary_file_read_and_unpack(256,2,True,4,"<")
     pass
-
+'''
 
 
 
