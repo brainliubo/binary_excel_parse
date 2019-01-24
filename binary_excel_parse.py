@@ -4,6 +4,9 @@ import xlwings
 import excel_process  as EP
 import os
 from  reg_class import Binary_File
+from  excel_parse import excel_parse_process
+
+
 global excel_file
 global data_dict
 global excel_dict
@@ -133,8 +136,11 @@ class myframe(UI.MyFrame):
     apply button 的解析主处理函数
     '''
     def apply_parse_function( self, event ):
-        global excel_file
+        global excel_dict
         global data_dict
+
+        #解析之后的每个域段的结果放在excel_dict中的cell_parse_result_list 中
+        excel_parse_process(excel_dict,data_dict)
         pass
 
 

@@ -9,7 +9,7 @@ class  Reg_Class_Test():
         self.cell_merge_col_num = 0   #cell merge 的行列数
         self.cell_merge_row_num = 0
         self.cell_merge_bit_list= cell_merge_bit_list
-        self.cell_pares_result_list = []
+        self.cell_parse_result_list = []
         self.Bit =Bit
     @classmethod  # 定义类方法,类方法的第一个参数是cls
     def add_attr(cls,attr_name,value):
@@ -26,19 +26,26 @@ def filed_bit_value(bit_start_in_all_bit, end_bit,data_list):
     int_index = bit_start_in_all_bit // 32  # 以int为单位，在第几个int中
     bit_start_in_int = bit_start_in_all_bit % 32 #以bit为单位，在int中的哪个bit开始
 
+    '''
+    # 当是字符串时，使用int(a,16), 否则使用Int（）
+    # result = ((int(data_list[int_index], 16) >> (bit_start_in_int)) & ((1 << bit_length) - 1))
+    '''
+    #开始解析
     if (bit_start_in_int + bit_length > 32):   # cross the int
         cross_int_flag = 1
         first_int_bit_length = 32 - bit_start_in_int #第一个int中的有效bit位
         second_int_bit_length = bit_length + bit_start_in_int  - 32  #第二个int中残留的bit位
-        temp_data_1 = ((int(data_list[int_index],16)  >> (bit_start_in_int)) & ((1 << first_int_bit_length) -1) )
+        temp_data_1 = ((int(data_list[int_index])  >> (bit_start_in_int)) & ((1 << first_int_bit_length) -1) )
         #第二个int 从0开始取second_int_bit_length 这么长bit
-        temp_data_2 =  ((int(data_list[int_index + 1],16)  >> (0)) & ((1 << second_int_bit_length) -1) )
+        temp_data_2 =  ((int(data_list[int_index + 1])  >> (0)) & ((1 << second_int_bit_length) -1) )
         result = (temp_data_2 << first_int_bit_length) | temp_data_1
     else:
         cross_int_flag = 0
         first_int_bit_length = bit_start_in_int + 1
         # 先右移，再&上响应的bit位
-        result = ((int(data_list[int_index],16)  >> (bit_start_in_int)) & ((1 << bit_length) -1) )
+        #当是字符串时，使用int(a,16), 否则使用Int（）
+        # result = ((int(data_list[int_index], 16) >> (bit_start_in_int)) & ((1 << bit_length) - 1))
+        result = ((int(data_list[int_index])  >> (bit_start_in_int)) & ((1 << bit_length) -1) )
     return  hex(result)
 
 
@@ -63,20 +70,22 @@ def single_reg_parse(reg_class,data_list):
                 start_field = int(bit_list[1])
             print("start = {},end = {}".format(start_field,end_field))
             result = filed_bit_value(start_field,end_field,data_list)
-            reg_class.cell_pares_result_list.append(result)
+            reg_class.cell_parse_result_list.append(result)
             print("cell_bit = {},result = {}".format(cell_bit,result))
+
 
     except Exception as err:
         print(err)
         print("reg parse exception occured")
 
+    return reg_class
 
 
 '''
 #根据excel_dict中的key，取得excel_dict中的REG_CLASS,然后去data_dict中找到对应地址的数据，然后进行解析。
 使用int(地址)
 '''
-def excel_parse(excel_dict, data_dict):
+def excel_parse_process(excel_dict, data_dict):
     for key in excel_dict.keys():
         print((key))
         try:
@@ -87,7 +96,8 @@ def excel_parse(excel_dict, data_dict):
                 data_list = data_dict.get(reg_addr,4294967295)
                 reg = excel_dict[key]
                 #根据reg中的数据bit位去解析bit位
-                single_reg_parse(reg,data_list)
+                temp_class = single_reg_parse(reg,data_list)
+                excel_dict[key] = temp_class
         except  Exception as err:
             print(err)
             #有可能excel_dict中的key 不是int地址
@@ -97,6 +107,14 @@ def excel_parse(excel_dict, data_dict):
 
 
 
+
+
+
+'''
+  测试代码
+
+'''
+'''
 if __name__ == "__main__":
     excel_dict = {}
     data_dict = {}
@@ -110,9 +128,9 @@ if __name__ == "__main__":
     #excel_dict["below "] = reg2
     #excel_dict["0x4"] = reg2
 
-    data_dict[0]= ["0xffffffd4","0xfedc2054","0xabcdef12"]  #
+    data_dict[0]= [0xffffffd4,0xfedc2054,0xabcdef12]  #
     #data_dict[1] = ["0xfffffd5"]
-    excel_parse(excel_dict,data_dict)
+    excel_parse_process(excel_dict,data_dict)
 
 
-
+'''
