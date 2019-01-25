@@ -55,8 +55,11 @@ def filed_bit_value(bit_start_in_all_bit, end_bit,data_list):
 根据reg_class 中的bit位段 进行数据的解析,
 reg_class: reg 的class定义
 data_list: 数据形成的List，每个list是以32bit 组成的元素list 
+loop_flag:是否循环解析
+loop_times: 在loop_flag= Ture时有效，
 '''
 def single_reg_parse(reg_class,data_list):
+    single_time_parse_result = []
     try:
         for cell_bit in reg_class.cell_merge_bit_list:
             print(cell_bit)
@@ -70,8 +73,11 @@ def single_reg_parse(reg_class,data_list):
                 start_field = int(bit_list[1])
             print("start = {},end = {}".format(start_field,end_field))
             result = filed_bit_value(start_field,end_field,data_list)
-            reg_class.cell_parse_result_list.append(result)
+            single_time_parse_result.append(result)
             print("cell_bit = {},result = {}".format(cell_bit,result))
+
+        # 将单次parse的结果存放在reg_class中
+        reg_class.cell_parse_result_list.append(single_time_parse_result)
 
 
     except Exception as err:
@@ -85,27 +91,26 @@ def single_reg_parse(reg_class,data_list):
 #根据excel_dict中的key，取得excel_dict中的REG_CLASS,然后去data_dict中找到对应地址的数据，然后进行解析。
 使用int(地址)
 '''
-def excel_parse_process(excel_dict, data_dict):
-    for key in excel_dict.keys():
-        print((key))
-        try:
-             #使用16进制进行str 的转化
-            if (type(int(key,16)) is int): #key是数字，表明地址
-                reg_addr = int(key,16)
-                #去data_dict中找到对应地址的数据
-                data_list = data_dict.get(reg_addr,4294967295)
-                reg = excel_dict[key]
-                #根据reg中的数据bit位去解析bit位
-                temp_class = single_reg_parse(reg,data_list)
-                excel_dict[key] = temp_class
-        except  Exception as err:
-            print(err)
-            #有可能excel_dict中的key 不是int地址
-            print("excel dict exception occured")
-
-
-
-
+def excel_parse_process(excel_dict, data_dict,loop_time,loop_range):
+    # 循环loop_time 的次数
+    for loop in range(loop_time):
+        for key in excel_dict.keys():
+            print((key))
+            try:
+                 #使用16进制进行str 的转化
+                if (type(int(key,16)) is int): #key是数字，表明地址
+                    reg_addr = int(key,16)
+                    reg_addr = reg_addr + (loop * loop_range)
+                    #去data_dict中找到对应地址的数据
+                    data_list = data_dict.get(reg_addr,4294967295)
+                    reg = excel_dict[key]
+                    #根据reg中的数据bit位去解析bit位
+                    temp_class = single_reg_parse(reg,data_list)
+                    excel_dict[key] = temp_class
+            except  Exception as err:
+                print(err)
+                #有可能excel_dict中的key 不是int地址
+                print("excel dict exception occured")
 
 
 
@@ -114,11 +119,12 @@ def excel_parse_process(excel_dict, data_dict):
   测试代码
 
 '''
+
 '''
 if __name__ == "__main__":
     excel_dict = {}
     data_dict = {}
-    cell_merge_bit_list = ["[95:64]","[63:50]","[49:28]","[27:16]","[15:0]"]
+    cell_merge_bit_list = ["[95:32]","[31:28]","[27:16]","[15:0]"]
     reg1 = Reg_Class_Test(1,2,32,True,cell_merge_bit_list)
 
     cell_merge_bit_list = ["[31]", "[30:12]", "[11:6]", "[5:0]"]
@@ -128,9 +134,11 @@ if __name__ == "__main__":
     #excel_dict["below "] = reg2
     #excel_dict["0x4"] = reg2
 
-    data_dict[0]= [0xffffffd4,0xfedc2054,0xabcdef12]  #
+    data_dict[0]= [0xffffffd4,0xffffffd5,0xffffffd6]  #
+    data_dict[12] =[0xffffffd7,0xffffffd8,0xffffffd9]
     #data_dict[1] = ["0xfffffd5"]
-    excel_parse_process(excel_dict,data_dict)
-
-
+    excel_parse_process(excel_dict,data_dict,2,12)
+    pass
 '''
+
+

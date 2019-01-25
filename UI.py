@@ -121,9 +121,9 @@ class MyFrame ( wx.Frame ):
 
 		fgSizer2.Add( self.m_staticText51, 0, wx.ALL, 5 )
 
-		ending_choiceChoices = [ u"小端模式", u"大端模式" ]
+		ending_choiceChoices = [ u" ", u"小端模式", u"大端模式", wx.EmptyString, wx.EmptyString ]
 		self.ending_choice = wx.Choice( parse_boxsizer.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.Size( 120,-1 ), ending_choiceChoices, 0 )
-		self.ending_choice.SetSelection( 1 )
+		self.ending_choice.SetSelection( 0 )
 		fgSizer2.Add( self.ending_choice, 2, wx.ALL, 5 )
 
 		self.m_staticText9 = wx.StaticText( parse_boxsizer.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -268,7 +268,7 @@ class MyFrame ( wx.Frame ):
 		self.endrow_textCtrl.Bind( wx.EVT_TEXT, self.excel_check_button_process )
 		self.binary_filePicker.Bind( wx.EVT_FILEPICKER_CHANGED, self.binary_file_select )
 		self.parse_check_button.Bind( wx.EVT_BUTTON, self.binary_check )
-		self.ending_choice.Bind( wx.EVT_CHOICE, self.parse_choise_selected )
+		self.ending_choice.Bind( wx.EVT_CHOICE, self.binary_check_button_process )
 		self.parse_unit_choice.Bind( wx.EVT_CHOICE, self.binary_check_button_process )
 		self.parse_number_textCtrl.Bind( wx.EVT_TEXT, self.binary_check_button_process )
 		self.loop_checkBox.Bind( wx.EVT_CHECKBOX, self.loop_parse_check )
@@ -299,11 +299,9 @@ class MyFrame ( wx.Frame ):
 	def binary_check( self, event ):
 		event.Skip()
 
-	def parse_choise_selected( self, event ):
-		event.Skip()
-
 	def binary_check_button_process( self, event ):
 		event.Skip()
+
 
 
 	def loop_parse_check( self, event ):

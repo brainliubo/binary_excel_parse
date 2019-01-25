@@ -34,10 +34,13 @@ class  Binary_File(object):
     '''
     def Binary_file_read_and_unpack(self,unit_bit, unit_number,loop_flag, loop_number,ending_mode):
 
-        if (ending_mode == 0): #小端模式
+        if (ending_mode == 1): #小端模式
             ending_mode_str = "<"
-        else:
+        elif (ending_mode == 2):  #大端模式
             ending_mode_str = ">"
+        else: #默认使用小端模式
+            ending_mode_str = "<"
+
         #确认要读取的字节长度
         if loop_flag == True:
             read_num = int(unit_number) * int(loop_number)

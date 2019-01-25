@@ -1194,7 +1194,7 @@
                                         <property name="caption"></property>
                                         <property name="caption_visible">1</property>
                                         <property name="center_pane">0</property>
-                                        <property name="choices">&quot;小端模式&quot; &quot;大端模式&quot;</property>
+                                        <property name="choices">&quot; &quot; &quot;小端模式&quot; &quot;大端模式&quot; &quot;&quot; &quot;&quot;</property>
                                         <property name="close_button">1</property>
                                         <property name="context_help"></property>
                                         <property name="context_menu">1</property>
@@ -1224,7 +1224,7 @@
                                         <property name="pin_button">1</property>
                                         <property name="pos"></property>
                                         <property name="resize">Resizable</property>
-                                        <property name="selection">1</property>
+                                        <property name="selection">0</property>
                                         <property name="show">1</property>
                                         <property name="size">120,-1</property>
                                         <property name="style"></property>
@@ -1238,7 +1238,7 @@
                                         <property name="window_extra_style"></property>
                                         <property name="window_name"></property>
                                         <property name="window_style"></property>
-                                        <event name="OnChoice">parse_choise_selected</event>
+                                        <event name="OnChoice">binary_check_button_process</event>
                                     </object>
                                 </object>
                                 <object class="sizeritem" expanded="0">

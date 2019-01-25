@@ -63,6 +63,7 @@ class myframe(UI.MyFrame):
 
 
 
+
     '''
     excel check button的使能和去使能
     '''
@@ -80,7 +81,8 @@ class myframe(UI.MyFrame):
     '''
     def binary_check_button_process( self, event ):
         index = self.parse_unit_choice.GetSelection()
-        if ((self.parse_unit_choice.GetString(index)!= "") and (self.parse_number_textCtrl.GetValue() != "")):
+        if ((self.parse_unit_choice.GetString(index)!= "") and (self.parse_number_textCtrl.GetValue() != "")
+             and (self.ending_choice.GetCurrentSelection() != 0)):
             self.parse_check_button.Enable()
             temp_value = int(self.binary_file_size_textctrl.GetValue()) // (int(self.parse_unit_choice.GetString(index)) //8)
             temp_value = temp_value // int(self.parse_number_textCtrl.GetValue())
