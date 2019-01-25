@@ -1,4 +1,4 @@
-
+import excel_process  as EP
 class  Reg_Class_Test():
     reg_filed_num = 0
     field_name_list = []
@@ -113,6 +113,33 @@ def excel_parse_process(excel_dict, data_dict,loop_time,loop_range):
                 print("excel dict exception occured")
 
 
+'''
+ 将解析之后的数据写出到excel_文件中去
+'''
+def excel_parse_output(excel_dict, excel_path):
+    output_excel = EP.excel_item(excel_path)
+    output_excel.excel_open()
+    output_excel.open_sheet(0)
+
+    for key in excel_dict.keys():
+        try:
+            if (type(int(key, 16)) is int):  # key是数字，表明地址
+                reg = excel_dict[key]
+                start_row = reg.cell_pos_row
+                start_col = reg.cell_pos_col
+                #将多次循环的解析结果依次写入不同的列中
+                for parse_list_index in range(len(reg.cell_parse_result_list)):
+                    data_list = reg.cell_parse_result_list[parse_list_index]
+                    output_excel.write_range(output_excel.sheet,
+                                 start_row ,
+                                 start_col + reg.reg_filed_num + 3 + parse_list_index, #在所有列之后再加3列之后输出
+                                 True,
+                                 data_list)
+        except:
+            pass
+    output_excel.save(output_excel.wb)
+    output_excel.close(output_excel.wb)
+
 
 
 '''
@@ -125,10 +152,10 @@ if __name__ == "__main__":
     excel_dict = {}
     data_dict = {}
     cell_merge_bit_list = ["[95:32]","[31:28]","[27:16]","[15:0]"]
-    reg1 = Reg_Class_Test(1,2,32,True,cell_merge_bit_list)
+    reg1 = Reg_Class_Test(1,1,32,True,cell_merge_bit_list)
 
     cell_merge_bit_list = ["[31]", "[30:12]", "[11:6]", "[5:0]"]
-    reg2 = Reg_Class_Test(1, 2, 32, True, cell_merge_bit_list)
+    reg2 = Reg_Class_Test(33, 2, 32, True, cell_merge_bit_list)
 
     excel_dict["0x0000"] = reg1
     #excel_dict["below "] = reg2
@@ -138,7 +165,6 @@ if __name__ == "__main__":
     data_dict[12] =[0xffffffd7,0xffffffd8,0xffffffd9]
     #data_dict[1] = ["0xfffffd5"]
     excel_parse_process(excel_dict,data_dict,2,12)
+    excel_parse_output(excel_dict,r"./dp_cc_parse_result_hhh.xlsx")
     pass
 '''
-
-

@@ -1,5 +1,6 @@
 import xlwings as XL
 from  reg_class import Reg_Class
+import os
 
 
 class excel_item(object):
@@ -15,15 +16,21 @@ class excel_item(object):
         self.column_offset = 0 # 开始读取时的column offset
     #检查excel的格式是否符合预期
     def excel_open(self):
-        app = XL.App(visible=True,add_book=False)
         app = XL.App(visible=True, add_book=False)
-        self.wb = app.books.open(self.path)
+        if os.path.exists(self.path):
+            self.wb = app.books.open(self.path)
+        else:
+            self.wb = app.books.add()
+            self.wb.save(self.path)
+            self.wb = XL.Book(self.path)
         return self.wb.sheets
-    def read_sheet(self,sheet_index):
+
+    def open_sheet(self,sheet_index):
         self.sheet = self.wb.sheets[sheet_index] # EXCEL的sheet可以通过excel指定来解析
 
-    def write(self,path):
-        pass
+    def write_range(self,sheet,start_row,start_col, transpose_flag,data_list):
+        sheet.range((start_row,start_col)).options(transpose = transpose_flag).value = data_list
+
 
     def save(self,wb):
         wb.save()

@@ -5,12 +5,15 @@ import excel_process  as EP
 import os
 from  reg_class import Binary_File
 from  excel_parse import excel_parse_process
+from excel_parse import excel_parse_output
+
 
 
 global excel_file
 global data_dict
 global excel_dict
-
+global loop_time
+global loop_range
 
 class myframe(UI.MyFrame):
     def output_excel_changed( self, event ):
@@ -101,7 +104,7 @@ class myframe(UI.MyFrame):
         global excel_file
         global excel_dict
 
-        excel_file.read_sheet(self.sheet_choice.GetCurrentSelection())
+        excel_file.open_sheet(self.sheet_choice.GetCurrentSelection())
 
         excel_file.format_check(excel_file.sheet, 1, 1)
         if (excel_file.sheet_valid):
@@ -120,12 +123,20 @@ class myframe(UI.MyFrame):
 
     def binary_check(self,event):
         global  data_dict
+        global  loop_time
+        global  loop_range
         #step1: 检查应该设置的值是否正确设置了
 
         #step2: 如果都设置了，则进行二进制文件的读取和解析
         b_file = Binary_File(self.binary_filePicker.GetPath())
-        index = self.parse_unit_choice.GetSelection()
+        index = self.parse_unit_choice.GetSelection() #获取选择项
+        if (self.loop_checkBox.IsChecked()):
+            loop_time = int(self.loop_textctrl.Value)
+        else:
+            loop_time = 1
 
+        #计算的是单次循环的字节数
+        loop_range = int(self.parse_number_textCtrl.Value) * int(self.parse_unit_choice.GetString(index)) // 8
         data_dict = b_file.Binary_file_read_and_unpack(self.parse_unit_choice.GetString(index),
                                             self.parse_number_textCtrl.Value,
                                             self.loop_checkBox.IsChecked(),
@@ -140,9 +151,12 @@ class myframe(UI.MyFrame):
     def apply_parse_function( self, event ):
         global excel_dict
         global data_dict
+        global loop_time
+        global loop_range
 
         #解析之后的每个域段的结果放在excel_dict中的cell_parse_result_list 中
-        excel_parse_process(excel_dict,data_dict)
+        excel_parse_process(excel_dict,data_dict,loop_time,loop_range)
+        excel_parse_output(excel_dict,r".\dp_cc_2.xlsx")
         pass
 
 
