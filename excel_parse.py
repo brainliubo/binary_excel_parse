@@ -46,7 +46,7 @@ def filed_bit_value(bit_start_in_all_bit, end_bit,data_list):
         #当是字符串时，使用int(a,16), 否则使用Int（）
         # result = ((int(data_list[int_index], 16) >> (bit_start_in_int)) & ((1 << bit_length) - 1))
         result = ((int(data_list[int_index])  >> (bit_start_in_int)) & ((1 << bit_length) -1) )
-    return  hex(result)
+    return  (result)
 
 
 
@@ -58,7 +58,7 @@ data_list: 数据形成的List，每个list是以32bit 组成的元素list
 loop_flag:是否循环解析
 loop_times: 在loop_flag= Ture时有效，
 '''
-def single_reg_parse(reg_class,data_list):
+def single_reg_parse(reg_class,data_list,data_format):
     single_time_parse_result = []
     try:
         for cell_bit in reg_class.cell_merge_bit_list:
@@ -73,7 +73,11 @@ def single_reg_parse(reg_class,data_list):
                 start_field = int(bit_list[1])
             print("start = {},end = {}".format(start_field,end_field))
             result = filed_bit_value(start_field,end_field,data_list)
-            single_time_parse_result.append(result)
+            if (data_format == 16):
+                single_time_parse_result.append(hex(result))
+            else:
+                single_time_parse_result.append(result)
+                
             print("cell_bit = {},result = {}".format(cell_bit,result))
 
         # 将单次parse的结果存放在reg_class中
@@ -91,7 +95,7 @@ def single_reg_parse(reg_class,data_list):
 #根据excel_dict中的key，取得excel_dict中的REG_CLASS,然后去data_dict中找到对应地址的数据，然后进行解析。
 使用int(地址)
 '''
-def excel_parse_process(excel_dict, data_dict,loop_time,loop_range):
+def excel_parse_process(excel_dict, data_dict,loop_time,loop_range,data_format):
     # 循环loop_time 的次数
     for key in excel_dict.keys():
         reg = excel_dict[key]
@@ -106,7 +110,7 @@ def excel_parse_process(excel_dict, data_dict,loop_time,loop_range):
                     data_list = data_dict.get(reg_addr,4294967295)
                     
                     #根据reg中的数据bit位去解析bit位
-                    temp_class = single_reg_parse(reg,data_list)
+                    temp_class = single_reg_parse(reg,data_list,data_format)
                     excel_dict[key] = temp_class
             except  Exception as err:
                 print(err)

@@ -16,9 +16,14 @@ global loop_time
 global loop_range
 global parse_data_format
 
+parse_data_format = 16 #默认16进制
+loop_time = 1 # 默认循环1次
+
+
 class myframe(UI.MyFrame):
+   
     def output_excel_changed( self, event ):
-        self.excel_output_textctrl.Value = self.output_excel_filePicker.GetPath()
+        print(self.output_excel_filePicker.GetPath())
     def loop_parse_check( self, event ):
         if self.loop_checkBox.IsChecked() == True:
             self.loop_textctrl.Enable()
@@ -42,7 +47,7 @@ class myframe(UI.MyFrame):
         global excel_file
 
         # disable button ,clear the textctrl's content
-
+        self.excel_check_button.Disable()
         self.startrow_textCtrl.Clear()
         self.endrow_textCtrl.Clear()
 
@@ -114,6 +119,9 @@ class myframe(UI.MyFrame):
             excel_dict = excel_file.sheet_cell_process(excel_file.sheet,
                                                     int(self.startrow_textCtrl.Value),
                                                     int(self.endrow_textCtrl.Value))
+            
+            excel_file.save(excel_file.wb)
+            excel_file.close(excel_file.wb)
 
             dlg = wx.MessageDialog(None, "excel 文件格式正确")
             retCode = dlg.ShowModal()
@@ -171,11 +179,11 @@ class myframe(UI.MyFrame):
         global loop_time
         global loop_range
         
-        
+        output_path = self.output_excel_filePicker.GetPath()
 
         #解析之后的每个域段的结果放在excel_dict中的cell_parse_result_list 中
         excel_parse_process(excel_dict,data_dict,loop_time,loop_range,parse_data_format)
-        excel_parse_output(excel_dict,r".\dp_cc_2.xlsx")
+        excel_parse_output(excel_dict,output_path)
         pass
 
 

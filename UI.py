@@ -93,7 +93,7 @@ class MyFrame ( wx.Frame ):
 		self.binary_filePicker = wx.FilePickerCtrl( binary_sizer.GetStaticBox(), wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.dat;*.bin", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		binary_sizer.Add( self.binary_filePicker, 10, wx.ALL, 5 )
 
-		self.parse_check_button = wx.Button( binary_sizer.GetStaticBox(), wx.ID_ANY, u"参数检查", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.parse_check_button = wx.Button( binary_sizer.GetStaticBox(), wx.ID_ANY, u"文件读取", wx.DefaultPosition, wx.DefaultSize, 0 )
 		binary_sizer.Add( self.parse_check_button, 0, wx.ALL, 5 )
 
 
@@ -123,8 +123,8 @@ class MyFrame ( wx.Frame ):
 
 		ending_choiceChoices = [ u" ", u"小端模式", u"大端模式", wx.EmptyString, wx.EmptyString ]
 		self.ending_choice = wx.Choice( parse_boxsizer.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.Size( 120,-1 ), ending_choiceChoices, 0 )
-		self.ending_choice.SetSelection( 0 )
-		fgSizer2.Add( self.ending_choice, 2, wx.ALL, 5 )
+		self.ending_choice.SetSelection( 1 )
+		fgSizer2.Add( self.ending_choice, 5, wx.ALL, 5 )
 
 		self.m_staticText9 = wx.StaticText( parse_boxsizer.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText9.Wrap( -1 )
@@ -149,7 +149,7 @@ class MyFrame ( wx.Frame ):
 		self.m_staticText10 = wx.StaticText( parse_boxsizer.GetStaticBox(), wx.ID_ANY, u"解析单元个数", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText10.Wrap( -1 )
 
-		fgSizer2.Add( self.m_staticText10, 0, wx.ALL, 5 )
+		fgSizer2.Add( self.m_staticText10, 0, wx.ALL|wx.EXPAND, 5 )
 
 		self.parse_number_textCtrl = wx.TextCtrl( parse_boxsizer.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_PROCESS_ENTER )
 		fgSizer2.Add( self.parse_number_textCtrl, 5, wx.ALL, 5 )
@@ -180,31 +180,36 @@ class MyFrame ( wx.Frame ):
 		fgSizer2.Add( self.max_loop_textCtrl, 0, wx.ALL, 5 )
 
 
-		parse_boxsizer.Add( fgSizer2, 1, wx.EXPAND, 5 )
+		parse_boxsizer.Add( fgSizer2, 1, wx.ALL|wx.EXPAND, 5 )
 
 
 		bSizer1.Add( parse_boxsizer, 1, wx.ALL|wx.EXPAND, 5 )
 
 		sbSizer62 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, wx.EmptyString ), wx.HORIZONTAL )
 
-		self.m_staticText = wx.StaticText( sbSizer62.GetStaticBox(), wx.ID_ANY, u"output_config", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText.Wrap( -1 )
-
-		sbSizer62.Add( self.m_staticText, 0, wx.ALL, 5 )
-
 		total_boxsizer1 = wx.BoxSizer( wx.VERTICAL )
 
 		sbSizer63 = wx.StaticBoxSizer( wx.StaticBox( sbSizer62.GetStaticBox(), wx.ID_ANY, wx.EmptyString ), wx.HORIZONTAL )
 
-		self.m_staticText93 = wx.StaticText( sbSizer63.GetStaticBox(), wx.ID_ANY, u"输出文件格式选择", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText20 = wx.StaticText( sbSizer63.GetStaticBox(), wx.ID_ANY, u"输出数据格式", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText20.Wrap( -1 )
+
+		sbSizer63.Add( self.m_staticText20, 0, wx.ALL, 5 )
+
+		output_data_format_choiceChoices = [ u"十六进制", u"十进制", wx.EmptyString ]
+		self.output_data_format_choice = wx.Choice( sbSizer63.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, output_data_format_choiceChoices, 0 )
+		self.output_data_format_choice.SetSelection( 0 )
+		sbSizer63.Add( self.output_data_format_choice, 1, wx.ALL, 5 )
+
+		self.m_staticText93 = wx.StaticText( sbSizer63.GetStaticBox(), wx.ID_ANY, u"输出文件格式", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText93.Wrap( -1 )
 
 		sbSizer63.Add( self.m_staticText93, 0, wx.ALL, 5 )
 
-		output_choiceChoices = [ u"excel文件", u"文本文件" ]
+		output_choiceChoices = [ u"excel文件" ]
 		self.output_choice = wx.Choice( sbSizer63.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, output_choiceChoices, 0 )
 		self.output_choice.SetSelection( 0 )
-		sbSizer63.Add( self.output_choice, 0, wx.ALL, 5 )
+		sbSizer63.Add( self.output_choice, 1, wx.ALL, 5 )
 
 
 		total_boxsizer1.Add( sbSizer63, 1, wx.EXPAND, 5 )
@@ -216,11 +221,8 @@ class MyFrame ( wx.Frame ):
 
 		output_excel_sizer.Add( self.output_statictext, 2, wx.ALL, 5 )
 
-		self.output_excel_textctrl = wx.TextCtrl( output_excel_sizer.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		output_excel_sizer.Add( self.output_excel_textctrl, 10, wx.ALL, 5 )
-
-		self.output_excel_filePicker = wx.FilePickerCtrl( output_excel_sizer.GetStaticBox(), wx.ID_ANY, u"C:\\Users\\brain.liu\\Desktop\\附件2-6.xlsx", u"Select a file", u"*.xlsx", wx.DefaultPosition, wx.DefaultSize, wx.FLP_SAVE|wx.FLP_SMALL )
-		output_excel_sizer.Add( self.output_excel_filePicker, 1, wx.ALL, 5 )
+		self.output_excel_filePicker = wx.FilePickerCtrl( output_excel_sizer.GetStaticBox(), wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.xlsx", wx.DefaultPosition, wx.DefaultSize, wx.FLP_SAVE|wx.FLP_SMALL|wx.FLP_USE_TEXTCTRL )
+		output_excel_sizer.Add( self.output_excel_filePicker, 12, wx.ALL, 5 )
 
 
 		total_boxsizer1.Add( output_excel_sizer, 1, wx.EXPAND, 5 )
@@ -232,11 +234,8 @@ class MyFrame ( wx.Frame ):
 
 		output_log_sizer.Add( self.output_log_statictext, 2, wx.ALL, 5 )
 
-		self.output_log_textctrl = wx.TextCtrl( output_log_sizer.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		output_log_sizer.Add( self.output_log_textctrl, 10, wx.ALL, 5 )
-
-		self.output_excel_filePicker1 = wx.FilePickerCtrl( output_log_sizer.GetStaticBox(), wx.ID_ANY, u"C:\\Users\\brain.liu\\Desktop\\附件2-6.xlsx", u"Select a file", u"*.log", wx.DefaultPosition, wx.DefaultSize, wx.FLP_SAVE|wx.FLP_SMALL )
-		output_log_sizer.Add( self.output_excel_filePicker1, 1, wx.ALL, 5 )
+		self.output_log_filePicker = wx.FilePickerCtrl( output_log_sizer.GetStaticBox(), wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.log", wx.DefaultPosition, wx.DefaultSize, wx.FLP_SAVE|wx.FLP_SMALL|wx.FLP_USE_TEXTCTRL )
+		output_log_sizer.Add( self.output_log_filePicker, 12, wx.ALL, 5 )
 
 
 		total_boxsizer1.Add( output_log_sizer, 1, wx.EXPAND, 5 )
@@ -272,9 +271,10 @@ class MyFrame ( wx.Frame ):
 		self.parse_unit_choice.Bind( wx.EVT_CHOICE, self.binary_check_button_process )
 		self.parse_number_textCtrl.Bind( wx.EVT_TEXT, self.binary_check_button_process )
 		self.loop_checkBox.Bind( wx.EVT_CHECKBOX, self.loop_parse_check )
+		self.output_data_format_choice.Bind( wx.EVT_CHOICE, self.output_data_format )
 		self.output_choice.Bind( wx.EVT_CHOICE, self.output_choice_select )
 		self.output_excel_filePicker.Bind( wx.EVT_FILEPICKER_CHANGED, self.output_excel_changed )
-		self.output_excel_filePicker1.Bind( wx.EVT_FILEPICKER_CHANGED, self.output_excel_changed )
+		self.output_log_filePicker.Bind( wx.EVT_FILEPICKER_CHANGED, self.output_excel_changed )
 		self.apply_button_boxsizerApply.Bind( wx.EVT_BUTTON, self.apply_parse_function )
 
 	def __del__( self ):
@@ -305,6 +305,9 @@ class MyFrame ( wx.Frame ):
 
 
 	def loop_parse_check( self, event ):
+		event.Skip()
+
+	def output_data_format( self, event ):
 		event.Skip()
 
 	def output_choice_select( self, event ):

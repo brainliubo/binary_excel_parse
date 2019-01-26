@@ -16,7 +16,7 @@ class excel_item(object):
         self.column_offset = 0 # 开始读取时的column offset
     #检查excel的格式是否符合预期
     def excel_open(self):
-        app = XL.App(visible=True, add_book=False)
+        app = XL.App(visible=False ,add_book=False)
         if os.path.exists(self.path):
             self.wb = app.books.open(self.path)
         else:
