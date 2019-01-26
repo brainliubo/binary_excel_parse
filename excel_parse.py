@@ -137,7 +137,8 @@ def excel_parse_output(excel_dict, excel_path):
                     data_list = reg.cell_parse_result_list[parse_list_index]
                     output_excel.write_range(output_excel.sheet,
                                  start_row ,
-                                 start_col + reg.reg_filed_num + 3 + parse_list_index, #在所有列之后再加3列之后输出
+                                 # 在所有列之后再加3列之后输出
+                                 start_col + reg.reg_filed_num + 3 + parse_list_index,
                                  True,
                                  data_list)
         except:

@@ -6,6 +6,7 @@ import os
 from  reg_class import Binary_File
 from  excel_parse import excel_parse_process
 from excel_parse import excel_parse_output
+import shutil
 
 
 
@@ -15,6 +16,7 @@ global excel_dict
 global loop_time
 global loop_range
 global parse_data_format
+global output_path
 
 parse_data_format = 16 #默认16进制
 loop_time = 1 # 默认循环1次
@@ -23,7 +25,15 @@ loop_time = 1 # 默认循环1次
 class myframe(UI.MyFrame):
    
     def output_excel_changed( self, event ):
-        print(self.output_excel_filePicker.GetPath())
+	    global output_path
+	    # 设置输出文件地址，如果文件不存在，则负责原始
+	    output_path = self.output_excel_filePicker.GetPath()
+	    src_path = self.excel_filePicker.GetPath()
+	    # 不存在此文件，则复制源excel文件到目的地址，并重命名
+	    if (os.path.exists(output_path) == False):
+		    shutil.copy(src_path, output_path)
+      
+		    
     def loop_parse_check( self, event ):
         if self.loop_checkBox.IsChecked() == True:
             self.loop_textctrl.Enable()
@@ -178,8 +188,30 @@ class myframe(UI.MyFrame):
         global data_dict
         global loop_time
         global loop_range
+        global  output_path
         
-        output_path = self.output_excel_filePicker.GetPath()
+        #读取二进制文件，将读取二进制文件放在apply一起，防止修改之后不重新读取
+
+        # step1: 检查应该设置的值是否正确设置了
+
+        # step2: 如果都设置了，则进行二进制文件的读取和解析
+        b_file = Binary_File(self.binary_filePicker.GetPath())
+        index = self.parse_unit_choice.GetSelection()  # 获取选择项
+        if (self.loop_checkBox.IsChecked()):
+	        loop_time = int(self.loop_textctrl.Value)
+        else:
+	        loop_time = 1
+
+        # 计算的是单次循环的字节数
+        loop_range = int(self.parse_number_textCtrl.Value) * int(self.parse_unit_choice.GetString(index)) // 8
+        data_dict = b_file.Binary_file_read_and_unpack(self.parse_unit_choice.GetString(index),
+                                                       self.parse_number_textCtrl.Value,
+                                                       self.loop_checkBox.IsChecked(),
+                                                       self.loop_textctrl.Value,
+                                                       self.ending_choice.GetCurrentSelection())
+        pass
+
+        
 
         #解析之后的每个域段的结果放在excel_dict中的cell_parse_result_list 中
         excel_parse_process(excel_dict,data_dict,loop_time,loop_range,parse_data_format)

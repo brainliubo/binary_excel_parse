@@ -1,7 +1,7 @@
 import xlwings as XL
 from  reg_class import Reg_Class
 import os
-
+import shutil
 
 class excel_item(object):
     def __init__(self,file_path):
@@ -14,15 +14,20 @@ class excel_item(object):
         self.sheet_valid = False
         self.row_offset = 0    #开始读取时的row offset
         self.column_offset = 0 # 开始读取时的column offset
+        self.new_excel_flag = 0
     #检查excel的格式是否符合预期
     def excel_open(self):
         app = XL.App(visible=False ,add_book=False)
         if os.path.exists(self.path):
             self.wb = app.books.open(self.path)
+            self.new_excel_flag =False
+            
         else:
-            self.wb = app.books.add()
+            self.wb = app.books.add() #新建立一个Book，并且保存，然后打开
             self.wb.save(self.path)
-            self.wb = XL.Book(self.path)
+            self.wb = app.books.open(self.path) #self.wb = XL.Book(self.path)
+            self.new_excel_flag = True
+            
         return self.wb.sheets
 
     def open_sheet(self,sheet_index):
