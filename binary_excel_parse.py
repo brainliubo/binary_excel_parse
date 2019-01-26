@@ -153,6 +153,8 @@ class myframe(UI.MyFrame):
         global data_dict
         global loop_time
         global loop_range
+        
+        
 
         #解析之后的每个域段的结果放在excel_dict中的cell_parse_result_list 中
         excel_parse_process(excel_dict,data_dict,loop_time,loop_range)

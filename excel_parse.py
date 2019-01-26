@@ -93,9 +93,10 @@ def single_reg_parse(reg_class,data_list):
 '''
 def excel_parse_process(excel_dict, data_dict,loop_time,loop_range):
     # 循环loop_time 的次数
-    for loop in range(loop_time):
-        for key in excel_dict.keys():
-            print((key))
+    for key in excel_dict.keys():
+        reg = excel_dict[key]
+        reg.cell_parse_result_list.clear()  # 每次启动之前，清除之前的解析结果
+        for loop in range(loop_time):
             try:
                  #使用16进制进行str 的转化
                 if (type(int(key,16)) is int): #key是数字，表明地址
@@ -103,7 +104,7 @@ def excel_parse_process(excel_dict, data_dict,loop_time,loop_range):
                     reg_addr = reg_addr + (loop * loop_range)
                     #去data_dict中找到对应地址的数据
                     data_list = data_dict.get(reg_addr,4294967295)
-                    reg = excel_dict[key]
+                    
                     #根据reg中的数据bit位去解析bit位
                     temp_class = single_reg_parse(reg,data_list)
                     excel_dict[key] = temp_class
