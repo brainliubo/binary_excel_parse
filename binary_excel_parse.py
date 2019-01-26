@@ -14,6 +14,7 @@ global data_dict
 global excel_dict
 global loop_time
 global loop_range
+global parse_data_format
 
 class myframe(UI.MyFrame):
     def output_excel_changed( self, event ):
@@ -22,17 +23,18 @@ class myframe(UI.MyFrame):
         if self.loop_checkBox.IsChecked() == True:
             self.loop_textctrl.Enable()
         else:
+            self.loop_textctrl.Clear()
             self.loop_textctrl.Disable()
 
     def output_choice_select( self, event ):
         if self.output_choice.GetSelection() == 0:
             #输出excel
-            self.output_excel_textctrl.Enable()
-            self.output_log_textctrl.Disable()
+            self.output_excel_filePicker.Enable()
+            self.output_log_filePicker.Disable()
         else:
             #输出文本文件
-            self.output_log_textctrl.Enable()
-            self.output_excel_textctrl.Disable()
+            self.output_log_filePicker.Enable()
+            self.output_excel_filePicker.Disable()
     '''
     文件选择时的处理,打开excel，并读取sheet的name,填入sheet_choice
     '''
@@ -63,8 +65,9 @@ class myframe(UI.MyFrame):
         self.parse_number_textCtrl.Clear()
         self.loop_textctrl.Clear()
         self.max_loop_textCtrl.Clear()
+        self.loop_textctrl.Disable()
 
-
+ 
 
 
     '''
@@ -145,6 +148,20 @@ class myframe(UI.MyFrame):
         pass
 
 
+
+
+
+    '''
+     output data format choice
+    '''
+    def output_data_format( self, event ):
+        global parse_data_format
+        if (self.output_data_format_choice.GetCurrentSelection() == 0): #16进制
+            parse_data_format = 16
+        else:
+            parse_data_format = 10
+            
+
     '''
     apply button 的解析主处理函数
     '''
@@ -157,7 +174,7 @@ class myframe(UI.MyFrame):
         
 
         #解析之后的每个域段的结果放在excel_dict中的cell_parse_result_list 中
-        excel_parse_process(excel_dict,data_dict,loop_time,loop_range)
+        excel_parse_process(excel_dict,data_dict,loop_time,loop_range,parse_data_format)
         excel_parse_output(excel_dict,r".\dp_cc_2.xlsx")
         pass
 
