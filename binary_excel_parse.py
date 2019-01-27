@@ -147,7 +147,7 @@ class myframe(UI.MyFrame):
                                                     self.m_statusBar)
             #excel_file.save(excel_file.wb)
             excel_file.close(excel_file.wb)
-            self.m_statusBar.PushStatusText("excel read done!", field = 0)
+            self.m_statusBar.PushStatusText("excel done! register:{0}".format(len(excel_dict)), field = 0)
         #关闭
         #excel_file.close(excel_file.wb)
 
@@ -175,7 +175,7 @@ class myframe(UI.MyFrame):
                                             self.loop_checkBox.IsChecked(),
                                             self.loop_textctrl.Value,
                                             self.ending_choice.GetCurrentSelection())
-        self.m_statusBar.PushStatusText("binary read done!{0}-{1}".format(len(data_dict), loop_time), field=1)
+        self.m_statusBar.PushStatusText("binary  done!{0}-{1}".format(len(data_dict), loop_time), field=1)
         pass
 
 
@@ -224,7 +224,7 @@ class myframe(UI.MyFrame):
                                                        self.loop_checkBox.IsChecked(),
                                                        self.loop_textctrl.Value,
                                                        self.ending_choice.GetCurrentSelection())
-        self.m_statusBar.PushStatusText("binary read done!{0}-{1}".format(len(data_dict) //loop_time,loop_time), field=1)
+        self.m_statusBar.PushStatusText("binary  done!{0}-{1}".format(len(data_dict) //loop_time,loop_time), field=1)
         pass
 
         
