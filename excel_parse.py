@@ -46,7 +46,7 @@ def filed_bit_value(bit_start_in_all_bit, end_bit,data_list):
         #当是字符串时，使用int(a,16), 否则使用Int（）
         # result = ((int(data_list[int_index], 16) >> (bit_start_in_int)) & ((1 << bit_length) - 1))
         result = ((int(data_list[int_index])  >> (bit_start_in_int)) & ((1 << bit_length) -1) )
-    return  hex(result)
+    return  (result)
 
 
 
@@ -58,7 +58,7 @@ data_list: 数据形成的List，每个list是以32bit 组成的元素list
 loop_flag:是否循环解析
 loop_times: 在loop_flag= Ture时有效，
 '''
-def single_reg_parse(reg_class,data_list):
+def single_reg_parse(reg_class,data_list,data_format):
     single_time_parse_result = []
     try:
         for cell_bit in reg_class.cell_merge_bit_list:
@@ -73,7 +73,11 @@ def single_reg_parse(reg_class,data_list):
                 start_field = int(bit_list[1])
             print("start = {},end = {}".format(start_field,end_field))
             result = filed_bit_value(start_field,end_field,data_list)
-            single_time_parse_result.append(result)
+            if (data_format == 16):
+                single_time_parse_result.append(hex(result))
+            else:
+                single_time_parse_result.append(result)
+                
             print("cell_bit = {},result = {}".format(cell_bit,result))
 
         # 将单次parse的结果存放在reg_class中
@@ -90,33 +94,46 @@ def single_reg_parse(reg_class,data_list):
 '''
 #根据excel_dict中的key，取得excel_dict中的REG_CLASS,然后去data_dict中找到对应地址的数据，然后进行解析。
 使用int(地址)
+#要设置寄存器个数,当读取的reg个数大于要解析的寄存器个数时，要根据寄存器个数来判断，否则当只需要解析部分reg，
+并且重复解析时，会出现重复部分的寄存器地址和剩余的寄存器地址相等的情况，
+例如:对reg0 进行重复4次解析，其地址为0,4,,8,12,但是剩余的寄存器地址也有4,8,12,所以会多解析，浪费时间。
+parse_reg_num: 要解析的reg个数
+loop_time: 解析的循环次数
+loop_range:解析一轮的地址范围
 '''
-def excel_parse_process(excel_dict, data_dict,loop_time,loop_range):
+def excel_parse_process(excel_dict, data_dict,parse_reg_num, loop_time,loop_range,data_format,statusbar):
+    parse_reg_index = 0
     # 循环loop_time 的次数
-    for loop in range(loop_time):
-        for key in excel_dict.keys():
-            print((key))
-            try:
-                 #使用16进制进行str 的转化
-                if (type(int(key,16)) is int): #key是数字，表明地址
-                    reg_addr = int(key,16)
-                    reg_addr = reg_addr + (loop * loop_range)
-                    #去data_dict中找到对应地址的数据
-                    data_list = data_dict.get(reg_addr,4294967295)
-                    reg = excel_dict[key]
-                    #根据reg中的数据bit位去解析bit位
-                    temp_class = single_reg_parse(reg,data_list)
-                    excel_dict[key] = temp_class
-            except  Exception as err:
-                print(err)
-                #有可能excel_dict中的key 不是int地址
-                print("excel dict exception occured")
+    for key in excel_dict.keys():
+        reg = excel_dict[key]
+        reg.cell_parse_result_list.clear()  # 每次启动之前，清除之前的解析结果
+        try:
+            #使用16进制进行str 的转化
+            if (type(int(key,16)) is int): #key是数字，表明地址
+                parse_reg_index = parse_reg_index + 1 #记录已经解析的寄存器个数
+                reg_addr = int(key, 16)
+                if (parse_reg_index <= parse_reg_num):
+                    for loop in range(loop_time):
+                        data_addr = reg_addr + (loop * loop_range)
+                        #去data_dict中找到对应地址的数据
+                        data_list = data_dict.get(data_addr,4294967295)
+
+                        #根据reg中的数据bit位去解析bit位
+                        temp_class = single_reg_parse(reg,data_list,data_format)
+                        excel_dict[key] = temp_class
+                        statusbar.PushStatusText("parse reg:{0},loop:{1}".format(reg_addr,loop + 1),field = 2)
+                else:
+                    pass
+        except  Exception as err:
+            print(err)
+            #有可能excel_dict中的key 不是int地址
+            print("excel dict exception occured")
 
 
 '''
  将解析之后的数据写出到excel_文件中去
 '''
-def excel_parse_output(excel_dict, excel_path):
+def excel_parse_output(excel_dict, excel_path,statusbar):
     output_excel = EP.excel_item(excel_path)
     output_excel.excel_open()
     output_excel.open_sheet(0)
@@ -127,14 +144,27 @@ def excel_parse_output(excel_dict, excel_path):
                 reg = excel_dict[key]
                 start_row = reg.cell_pos_row
                 start_col = reg.cell_pos_col
-                #将多次循环的解析结果依次写入不同的列中
+
+                output_excel.write_range(output_excel.sheet,
+                                         start_row,
+                                         # 在所有列之后再加3列之后输出
+                                         start_col + reg.reg_filed_num + 3 ,
+                                         True,
+                                         reg.cell_parse_result_list)
+                statusbar.PushStatusText("output reg:{0}".format(key), field=3)
+                '''
+                 #将多次循环的解析结果依次写入不同的列中
                 for parse_list_index in range(len(reg.cell_parse_result_list)):
                     data_list = reg.cell_parse_result_list[parse_list_index]
                     output_excel.write_range(output_excel.sheet,
                                  start_row ,
-                                 start_col + reg.reg_filed_num + 3 + parse_list_index, #在所有列之后再加3列之后输出
+                                 # 在所有列之后再加3列之后输出
+                                 start_col + reg.reg_filed_num + 3 + parse_list_index,
                                  True,
                                  data_list)
+                    statusbar.PushStatusText("output reg:{0}".format(key), field=3)
+              '''
+
         except:
             pass
     output_excel.save(output_excel.wb)

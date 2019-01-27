@@ -1,7 +1,7 @@
 import xlwings as XL
 from  reg_class import Reg_Class
 import os
-
+import shutil
 
 class excel_item(object):
     def __init__(self,file_path):
@@ -14,15 +14,20 @@ class excel_item(object):
         self.sheet_valid = False
         self.row_offset = 0    #开始读取时的row offset
         self.column_offset = 0 # 开始读取时的column offset
+        self.new_excel_flag = 0
     #检查excel的格式是否符合预期
     def excel_open(self):
-        app = XL.App(visible=True, add_book=False)
+        app = XL.App(visible=False ,add_book=False)
         if os.path.exists(self.path):
             self.wb = app.books.open(self.path)
+            self.new_excel_flag =False
+            
         else:
-            self.wb = app.books.add()
+            self.wb = app.books.add() #新建立一个Book，并且保存，然后打开
             self.wb.save(self.path)
-            self.wb = XL.Book(self.path)
+            self.wb = app.books.open(self.path) #self.wb = XL.Book(self.path)
+            self.new_excel_flag = True
+            
         return self.wb.sheets
 
     def open_sheet(self,sheet_index):
@@ -111,7 +116,7 @@ class excel_item(object):
 
         return cell_item
 
-    def sheet_cell_process(self,sheet,start_row,end_row):
+    def sheet_cell_process(self,sheet,start_row,end_row,statusbar):
         #cell_item_list = [ ]
         cell_item_dict = { } #存放在 dict 中
         end_row_flag = False
@@ -121,6 +126,7 @@ class excel_item(object):
             row = row + cell_item.cell_merge_row_num  # 更新，
             #cell_item_list.append(cell_item)
             cell_item_dict[cell_item.__dict__[Reg_Class.field_name_list[0]]] = cell_item
+            statusbar.PushStatusText("excel read:{}".format(len(cell_item_dict)), field = 0)
    
         # 返回cell_item_dict 
         return  cell_item_dict
