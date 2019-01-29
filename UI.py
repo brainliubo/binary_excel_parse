@@ -20,6 +20,7 @@ class MyFrame ( wx.Frame ):
 		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"binary_excel_parse_tool", pos = wx.DefaultPosition, size = wx.Size( 600,600 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
+		self.SetExtraStyle( wx.WS_EX_VALIDATE_RECURSIVELY )
 		self.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_3DLIGHT ) )
 
 		bSizer1 = wx.BoxSizer( wx.VERTICAL )
@@ -93,8 +94,8 @@ class MyFrame ( wx.Frame ):
 		self.binary_filePicker = wx.FilePickerCtrl( binary_sizer.GetStaticBox(), wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.dat;*.bin", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		binary_sizer.Add( self.binary_filePicker, 10, wx.ALL, 5 )
 
-		self.parse_check_button = wx.Button( binary_sizer.GetStaticBox(), wx.ID_ANY, u"文件读取", wx.DefaultPosition, wx.DefaultSize, 0 )
-		binary_sizer.Add( self.parse_check_button, 0, wx.ALL, 5 )
+		self.binary_check_button = wx.Button( binary_sizer.GetStaticBox(), wx.ID_ANY, u"文件读取", wx.DefaultPosition, wx.DefaultSize, 0 )
+		binary_sizer.Add( self.binary_check_button, 0, wx.ALL, 5 )
 
 
 		parse_boxsizer.Add( binary_sizer, 0, wx.EXPAND, 5 )
@@ -165,7 +166,8 @@ class MyFrame ( wx.Frame ):
 		fgSizer2.Add( self.m_staticText11, 0, wx.ALL, 5 )
 
 		self.loop_textctrl = wx.TextCtrl( parse_boxsizer.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_PROCESS_ENTER )
-		self.loop_textctrl.SetMaxLength( 100 )
+		self.loop_textctrl.SetExtraStyle( wx.WS_EX_VALIDATE_RECURSIVELY )
+
 		fgSizer2.Add( self.loop_textctrl, 5, wx.ALL, 5 )
 
 		self.loop_checkBox = wx.CheckBox( parse_boxsizer.GetStaticBox(), wx.ID_ANY, u"循环解析", wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -264,13 +266,18 @@ class MyFrame ( wx.Frame ):
 		self.excel_filePicker.Bind( wx.EVT_FILEPICKER_CHANGED, self.excel_file_select )
 		self.excel_check_button.Bind( wx.EVT_BUTTON, self.excel_check )
 		self.sheet_choice.Bind( wx.EVT_CHOICE, self.excel_check_button_process )
+		self.startrow_textCtrl.Bind( wx.EVT_KEY_UP, self.number_check )
 		self.startrow_textCtrl.Bind( wx.EVT_TEXT, self.excel_check_button_process )
+		self.endrow_textCtrl.Bind( wx.EVT_KEY_UP, self.number_check )
 		self.endrow_textCtrl.Bind( wx.EVT_TEXT, self.excel_check_button_process )
 		self.binary_filePicker.Bind( wx.EVT_FILEPICKER_CHANGED, self.binary_file_select )
-		self.parse_check_button.Bind( wx.EVT_BUTTON, self.binary_check )
+		self.binary_check_button.Bind( wx.EVT_BUTTON, self.binary_check )
 		self.ending_choice.Bind( wx.EVT_CHOICE, self.binary_check_button_process )
 		self.parse_unit_choice.Bind( wx.EVT_CHOICE, self.binary_check_button_process )
+		self.parse_number_textCtrl.Bind( wx.EVT_KEY_UP, self.number_check )
+		self.parse_number_textCtrl.Bind( wx.EVT_LEAVE_WINDOW, self.parse_reg_setting_check )
 		self.parse_number_textCtrl.Bind( wx.EVT_TEXT, self.binary_check_button_process )
+		self.loop_textctrl.Bind( wx.EVT_KEY_UP, self.loop_enter )
 		self.loop_checkBox.Bind( wx.EVT_CHECKBOX, self.loop_parse_check )
 		self.output_data_format_choice.Bind( wx.EVT_CHOICE, self.output_data_format )
 		self.output_choice.Bind( wx.EVT_CHOICE, self.output_choice_select )
@@ -292,6 +299,10 @@ class MyFrame ( wx.Frame ):
 	def excel_check_button_process( self, event ):
 		event.Skip()
 
+	def number_check( self, event ):
+		event.Skip()
+
+
 
 
 	def binary_file_select( self, event ):
@@ -304,6 +315,13 @@ class MyFrame ( wx.Frame ):
 		event.Skip()
 
 
+
+	def parse_reg_setting_check( self, event ):
+		event.Skip()
+
+
+	def loop_enter( self, event ):
+		event.Skip()
 
 	def loop_parse_check( self, event ):
 		event.Skip()

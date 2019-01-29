@@ -50,7 +50,7 @@
             <property name="subclass">; ; forward_declare</property>
             <property name="title">binary_excel_parse_tool</property>
             <property name="tooltip"></property>
-            <property name="window_extra_style"></property>
+            <property name="window_extra_style">wxWS_EX_VALIDATE_RECURSIVELY</property>
             <property name="window_name"></property>
             <property name="window_style">wxTAB_TRAVERSAL</property>
             <property name="xrc_skip_sizer">1</property>
@@ -552,6 +552,7 @@
                                                 <property name="window_extra_style"></property>
                                                 <property name="window_name"></property>
                                                 <property name="window_style"></property>
+                                                <event name="OnKeyUp">number_check</event>
                                                 <event name="OnText">excel_check_button_process</event>
                                             </object>
                                         </object>
@@ -678,6 +679,7 @@
                                                 <property name="window_extra_style"></property>
                                                 <property name="window_name"></property>
                                                 <property name="window_style"></property>
+                                                <event name="OnKeyUp">number_check</event>
                                                 <event name="OnText">excel_check_button_process</event>
                                             </object>
                                         </object>
@@ -885,7 +887,7 @@
                                         <property name="minimize_button">0</property>
                                         <property name="minimum_size"></property>
                                         <property name="moveable">1</property>
-                                        <property name="name">parse_check_button</property>
+                                        <property name="name">binary_check_button</property>
                                         <property name="pane_border">1</property>
                                         <property name="pane_position"></property>
                                         <property name="pane_size"></property>
@@ -1612,6 +1614,8 @@
                                         <property name="window_extra_style"></property>
                                         <property name="window_name"></property>
                                         <property name="window_style"></property>
+                                        <event name="OnKeyUp">number_check</event>
+                                        <event name="OnLeaveWindow">parse_reg_setting_check</event>
                                         <event name="OnText">binary_check_button_process</event>
                                     </object>
                                 </object>
@@ -1772,7 +1776,7 @@
                                         <property name="max_size"></property>
                                         <property name="maximize_button">0</property>
                                         <property name="maximum_size"></property>
-                                        <property name="maxlength">100</property>
+                                        <property name="maxlength"></property>
                                         <property name="min_size"></property>
                                         <property name="minimize_button">0</property>
                                         <property name="minimum_size"></property>
@@ -1791,14 +1795,15 @@
                                         <property name="subclass">; ; forward_declare</property>
                                         <property name="toolbar_pane">0</property>
                                         <property name="tooltip"></property>
-                                        <property name="validator_data_type"></property>
-                                        <property name="validator_style">wxFILTER_NONE</property>
-                                        <property name="validator_type">wxDefaultValidator</property>
+                                        <property name="validator_data_type">int</property>
+                                        <property name="validator_style">wxFILTER_ALPHA|wxFILTER_NONE</property>
+                                        <property name="validator_type">wxTextValidator</property>
                                         <property name="validator_variable"></property>
                                         <property name="value"></property>
-                                        <property name="window_extra_style"></property>
+                                        <property name="window_extra_style">wxWS_EX_VALIDATE_RECURSIVELY</property>
                                         <property name="window_name"></property>
                                         <property name="window_style"></property>
+                                        <event name="OnKeyUp">loop_enter</event>
                                     </object>
                                 </object>
                                 <object class="sizeritem" expanded="0">

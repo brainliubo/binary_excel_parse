@@ -2,7 +2,7 @@ import xlwings as XL
 from  reg_class import Reg_Class
 import os
 import shutil
-
+import time
 class excel_item(object):
     def __init__(self,file_path):
         self.column = 0
@@ -83,35 +83,56 @@ class excel_item(object):
         # 通过fieldname来判断 是否有merge cell
         merge_judge_col_index = Reg_Class.field_name_list.index("Bit")
 
+        start_time = time.clock()
         # 读取一行的元素，填写class
+        '''
         for index in range(Reg_Class.reg_filed_num):
-            print( sheet.range((row, col + index)).value)
-            print(type( sheet.range((row, col + index)).value))
             cell_item.__dict__[Reg_Class.field_name_list[index]] = sheet.range((row, col + index)).value
+       '''
+        #读第一列：
+        cell_item.__dict__[Reg_Class.field_name_list[0]] = sheet.range((row, col)).value
+        #读关键字所在的列
+        cell_item.__dict__[Reg_Class.field_name_list[merge_judge_col_index]] = sheet.range((row, col + merge_judge_col_index)).value
 
+
+        end_time = time.clock()
+        print("first row time:{} ".format(end_time - start_time))
+
+        start_time = time.clock()
         #判断行合并的情况
-        if(cell_item.__dict__[Reg_Class.field_name_list[0]] != None):
+        #如果关键字段的所在列的cell中有值，则判断下一行是否为空，
+        if(cell_item.__dict__[Reg_Class.field_name_list[merge_judge_col_index]] != None):
+            cell_item.cell_isreg_flag = True  # 是一个合格的寄存器
             cell_item.cell_merge_bit_list.append(cell_item.Bit)
             # step1: 判断合并
             # 判断后面行的offset 列和bit 列的值，确认是否是一个merge cell
-            while (sheet.range((row+ merge_row_number + 1, col)).value == None):  # 列不变，行变
+            #第一列的下一行的值是None，并且关键字的那一列的值不是None,说明是合并的寄存器
+            while (sheet.range((row+ merge_row_number + 1, col)).value == None):
+                # 列不变，行变
                 judge_value = sheet.range(((row + merge_row_number + 1), (col + merge_judge_col_index))).value
                 if (None != judge_value):
                     merge_row_number = merge_row_number + 1
                     cell_item.cell_merge_bit_list.append(judge_value)
                 else:
                     null_row_number = null_row_number + 1
-                    if (null_row_number == 10):       #连续后面10行都是空，那么认为读取excel结束
+                    if (null_row_number == 5):       #连续后面10行都是空，那么认为读取excel结束
                         break
 
             cell_item.cell_merge_row_num = merge_row_number + 1  # 加上第一行
+
+            end_time = time.clock()
+            print("judge merge time:{}".format(end_time - start_time))
 
             # step2: 判断行合并，在当前版本中省略
 
             #step2: 返回cell_item
             if (cell_item.cell_merge_col_num > 1) or (cell_item.cell_merge_row_num > 1):
                 cell_item.cell_merge_flag = True
+
+
+
         else: #空行也要加一行
+            cell_item.cell_isreg_flag = False #不是一个合格的寄存器
             cell_item.cell_merge_row_num = merge_row_number + 1  # 加上第一行
 
         return cell_item
@@ -124,9 +145,11 @@ class excel_item(object):
         while row < end_row:
             cell_item = self.sheet_cell_read(sheet,row,1)
             row = row + cell_item.cell_merge_row_num  # 更新，
-            #cell_item_list.append(cell_item)
-            cell_item_dict[cell_item.__dict__[Reg_Class.field_name_list[0]]] = cell_item
-            statusbar.PushStatusText("excel read:{}".format(len(cell_item_dict)), field = 0)
+
+            #只记录合格的reg
+            if (cell_item.cell_isreg_flag == True):
+                cell_item_dict[cell_item.__dict__[Reg_Class.field_name_list[0]]] = cell_item
+            statusbar.PushStatusText("excel read:{}".format(row), field = 0)
    
         # 返回cell_item_dict 
         return  cell_item_dict
