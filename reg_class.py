@@ -8,6 +8,7 @@ class  Reg_Class():
         self.cell_merge_flag = 0   #cell 是否Merge
         self.cell_merge_col_num = 0   #cell merge 的行列数
         self.cell_merge_row_num = 0
+        self.cell_isreg_flag = False  #
         self.cell_merge_bit_list= []  #寄存器中包含的各个位段的bit 起始位置和结束位置
         self.cell_parse_result_list = [] #寄存器中包含的各个位段的解析结果存放队列
     @classmethod  # 定义类方法,类方法的第一个参数是cls

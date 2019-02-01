@@ -7,7 +7,7 @@ from  reg_class import Binary_File
 from  excel_parse import excel_parse_process
 from excel_parse import excel_parse_output
 import shutil
-
+from validtor_for_ui import  IntValidator
 
 
 global excel_file
@@ -24,15 +24,32 @@ parse_data_format = 16 #默认16进制
 loop_time = 1 # 默认循环1次
 
 
+class myapp(wx.App):
+    #OnInit函数是在APP 启动时进行的初始化操作
+    def OnInit(self):
+        frame = myframe(None)
+        frame.excel_check_button.Disable()
+        frame.binary_check_button.Disable()
+        frame.loop_checkBox.SetValue(False)
+        frame.Show()
+        return  True  #必须返回true
+
+    #OnExit 函数是在APP关闭时，必须进行的操作
+    def OnExit(self):
+        excel_file.close(excel_file.wb)
+        excel_file.kill()  # kill 掉打开的excel文件进程
+        pass
+
+
 class myframe(UI.MyFrame):
     def output_excel_changed( self, event ):
-	    global output_path
-	    # 设置输出文件地址，如果文件不存在，则负责原始
-	    output_path = self.output_excel_filePicker.GetPath()
-	    src_path = self.excel_filePicker.GetPath()
-	    # 不存在此文件，则复制源excel文件到目的地址，并重命名
-	    if (os.path.exists(output_path) == False):
-		    shutil.copy(src_path, output_path)
+        global output_path
+        # 设置输出文件地址，如果文件不存在，则负责原始
+        output_path = self.output_excel_filePicker.GetPath()
+        src_path = self.excel_filePicker.GetPath()
+        # 不存在此文件，则复制源excel文件到目的地址，并重命名
+        if (os.path.exists(output_path) == False):
+            shutil.copy(src_path, output_path)
       
 		    
     def loop_parse_check( self, event ):
@@ -41,6 +58,20 @@ class myframe(UI.MyFrame):
         else:
             self.loop_textctrl.Clear()
             self.loop_textctrl.Disable()
+
+    def loop_enter( self, event ):
+        self.loop_textctrl.SetValidator(validator= IntValidator() )
+        if True ==  self.loop_textctrl.GetValidator().Validate():
+            self.loop_textctrl.GetValidator().Validate_MaxLimit(self.max_loop_textCtrl.Value)
+        pass
+
+
+    def number_check(self,event):
+        subwindow =  event.GetEventObject()  #获取event发出来的object
+        subwindow.SetValidator(validator= IntValidator())
+        subwindow.GetValidator().Validate()
+
+
 
     def output_choice_select( self, event ):
         if self.output_choice.GetSelection() == 0:
@@ -76,7 +107,7 @@ class myframe(UI.MyFrame):
     def  binary_file_select( self, event ):
         self.binary_file_size_textctrl.Value = str(os.path.getsize( self.binary_filePicker.GetPath()))
         #disable button ,clear the textctrl's content
-        self.parse_check_button.Disable()
+        self.binary_check_button.Disable()
         self.parse_unit_choice.SetString(0,"")
         self.parse_number_textCtrl.Clear()
         self.loop_textctrl.Clear()
@@ -104,14 +135,14 @@ class myframe(UI.MyFrame):
         index = self.parse_unit_choice.GetSelection()
         if ((self.parse_unit_choice.GetString(index)!= "") and (self.parse_number_textCtrl.GetValue() != "")
              and (self.ending_choice.GetCurrentSelection() != 0)):
-            self.parse_check_button.Enable()
+            self.binary_check_button.Enable()
             temp_value = int(self.binary_file_size_textctrl.GetValue()) // (int(self.parse_unit_choice.GetString(index)) //8)
             temp_value = temp_value // int(self.parse_number_textCtrl.GetValue())
             self.max_loop_textCtrl.SetValue(str(temp_value))
             self.max_loop_textCtrl.Disable()
 
         else:
-            self.parse_check_button.Disable()
+            self.binary_check_button.Disable()
             self.max_loop_textCtrl.Enable()
             self.max_loop_textCtrl.Clear()
 
@@ -122,6 +153,7 @@ class myframe(UI.MyFrame):
         global excel_file
         global excel_dict
 
+        excel_file.excel_open() # 每次点击读取文件时，需要重新打开excel,因为上一次读取之前是关闭了wb的
         excel_file.open_sheet(self.sheet_choice.GetCurrentSelection())
         #从起始行开始进行一整行的读取,判断是否有关键字
         excel_file.format_check(excel_file.sheet,
@@ -142,14 +174,40 @@ class myframe(UI.MyFrame):
         if (excel_file.sheet_valid):
             self.m_statusBar.PushStatusText("excel reading...", field=0)
             excel_dict = excel_file.sheet_cell_process(excel_file.sheet,
-                                                    int(self.startrow_textCtrl.Value),
+                                                    int(self.startrow_textCtrl.Value) + 1,
                                                     int(self.endrow_textCtrl.Value),
                                                     self.m_statusBar)
             #excel_file.save(excel_file.wb)
             excel_file.close(excel_file.wb)
-            self.m_statusBar.PushStatusText("excel read done!", field = 0)
+            self.m_statusBar.PushStatusText("excel done! register:{0}".format(len(excel_dict)), field = 0)
         #关闭
         #excel_file.close(excel_file.wb)
+
+    '''
+    当parse_unit_num个数改变时，当离开这个window时，要检查loop的设置
+    '''
+    def  parse_reg_setting_check(self,event):
+        #step1: 检查输入的值是否大于读取的excel表中的寄存器个数
+        if (len(excel_dict) > 0):
+            pass
+        #step2：检查是否二进制文件已经输入，并且循环解析所需的字节数不能超出总的文件大小
+        if (int (self.binary_file_size_textctrl.Value) > 0 ):
+            if  (self.parse_unit_choice.GetCurrentSelection() != 0):
+                reg_num = int(self.parse_number_textCtrl.Value)
+                index = self.parse_unit_choice.GetCurrentSelection()
+                reg_byte = int(self.parse_unit_choice.GetString(index)) // 8
+                if (reg_byte * reg_num > int(self.binary_file_size_textctrl.Value)):
+                    wx.MessageBox("解析单元长度和个数超出总文件字节大小","error")
+            else:
+                wx.MessageBox("请设置解析单元长度", "error")
+        else:
+            wx.MessageBox("二进制文件选择错误或者文件大小错误","error")
+
+        if (self.loop_checkBox.IsChecked()):
+            self.loop_textctrl.SetValidator(validator=IntValidator())
+            if (self.loop_textctrl.GetValidator().Validate_MaxLimit(self.max_loop_textCtrl.Value)):
+                return True
+
 
     def binary_check(self,event):
         global  data_dict
@@ -175,7 +233,7 @@ class myframe(UI.MyFrame):
                                             self.loop_checkBox.IsChecked(),
                                             self.loop_textctrl.Value,
                                             self.ending_choice.GetCurrentSelection())
-        self.m_statusBar.PushStatusText("binary read done!{0}-{1}".format(len(data_dict), loop_time), field=1)
+        self.m_statusBar.PushStatusText("binary  done!{0}-{1}".format(len(data_dict), loop_time), field=1)
         pass
 
 
@@ -224,7 +282,7 @@ class myframe(UI.MyFrame):
                                                        self.loop_checkBox.IsChecked(),
                                                        self.loop_textctrl.Value,
                                                        self.ending_choice.GetCurrentSelection())
-        self.m_statusBar.PushStatusText("binary read done!{0}-{1}".format(len(data_dict) //loop_time,loop_time), field=1)
+        self.m_statusBar.PushStatusText("binary  done!{0}-{1}".format(len(data_dict) //loop_time,loop_time), field=1)
         pass
 
         
@@ -252,7 +310,7 @@ class myframe(UI.MyFrame):
 
 
 if __name__ == "__main__":
-    app = wx.App()
-    frame = myframe(None)
-    frame.Show()
+    app = myapp()
+    #frame = myframe(None)
+    #frame.Show()
     app.MainLoop()
