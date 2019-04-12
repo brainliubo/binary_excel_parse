@@ -1,0 +1,10 @@
+2019-04-12 16:34:23,092 - logger - excel_process- 83-INFO - sheet is valid,pls go on 
+2019-04-12 16:34:43,208 - logger - excel_parse- 123-INFO - 
+--------------------------------------------------------------
+2019-04-12 16:34:43,208 - logger - excel_parse- 125-INFO - reg index = 1,reg_addr = 0x0,loop_index = 0,data_addr = 0x0,data = [4294966996]
+2019-04-12 16:34:43,209 - logger - excel_parse- 123-INFO - 
+--------------------------------------------------------------
+2019-04-12 16:34:43,209 - logger - excel_parse- 125-INFO - reg index = 2,reg_addr = 0x8,loop_index = 0,data_addr = 0x8,data = [4294966998]
+2019-04-12 16:34:43,209 - logger - excel_parse- 123-INFO - 
+--------------------------------------------------------------
+2019-04-12 16:34:43,209 - logger - excel_parse- 125-INFO - reg index = 3,reg_addr = 0x4,loop_index = 0,data_addr = 0x4,data = [4294966997]

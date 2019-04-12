@@ -1,4 +1,6 @@
 import excel_process  as EP
+import logger as log
+
 class  Reg_Class_Test():
     reg_filed_num = 0
     field_name_list = []
@@ -62,7 +64,7 @@ def single_reg_parse(reg_class,data_list,data_format):
     single_time_parse_result = []
     try:
         for cell_bit in reg_class.cell_merge_bit_list:
-            print(cell_bit)
+            #log.logger.debug(cell_bit)
             #得到每个bit段的start_bit_addr , end_bit_addr
             bit = cell_bit.lstrip("[")
             bit_list = bit.rstrip("]").split(":")
@@ -71,22 +73,22 @@ def single_reg_parse(reg_class,data_list,data_format):
             else:
                 end_field = int(bit_list[0])
                 start_field = int(bit_list[1])
-            print("start = {},end = {}".format(start_field,end_field))
+            log.logger.debug("start = {},end = {}".format(start_field,end_field))
             result = filed_bit_value(start_field,end_field,data_list)
             if (data_format == 16):
                 single_time_parse_result.append(hex(result))
             else:
                 single_time_parse_result.append(result)
                 
-            print("cell_bit = {},result = {}".format(cell_bit,result))
+            log.logger.debug("cell_bit = {},result = {}".format(cell_bit,result))
 
         # 将单次parse的结果存放在reg_class中
         reg_class.cell_parse_result_list.append(single_time_parse_result)
 
 
     except Exception as err:
-        print(err)
-        print("reg parse exception occured")
+        log.logger.error(err)
+        log.logger.error("reg parse exception occured")
 
     return reg_class
 
@@ -112,12 +114,15 @@ def excel_parse_process(excel_dict, data_dict,parse_reg_num, loop_time,loop_rang
             if (type(int(key,16)) is int): #key是数字，表明地址
                 parse_reg_index = parse_reg_index + 1 #记录已经解析的寄存器个数
                 reg_addr = int(key, 16)
+
                 if (parse_reg_index <= parse_reg_num):
                     for loop in range(loop_time):
                         data_addr = reg_addr + (loop * loop_range)
                         #去data_dict中找到对应地址的数据
                         data_list = data_dict.get(data_addr,4294967295)
-
+                        log.logger.info("\n--------------------------------------------------------------")
+                        log.logger.info("reg index = {0},reg_addr = {1},loop_index = {2},data_addr = {3},data = {4}".format(
+                            parse_reg_index,hex(reg_addr),loop,hex(data_addr),(data_list)))
                         #根据reg中的数据bit位去解析bit位
                         temp_class = single_reg_parse(reg,data_list,data_format)
                         excel_dict[key] = temp_class
@@ -125,9 +130,9 @@ def excel_parse_process(excel_dict, data_dict,parse_reg_num, loop_time,loop_rang
                 else:
                     pass
         except  Exception as err:
-            print(err)
+            log.logger.error(err)
             #有可能excel_dict中的key 不是int地址
-            print("excel dict exception occured")
+            log.logger.error("excel dict exception occured")
 
 
 '''

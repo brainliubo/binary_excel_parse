@@ -3,6 +3,8 @@ from  reg_class import Reg_Class
 import os
 import shutil
 import time
+import logger as log
+
 class excel_item(object):
     def __init__(self,file_path):
         self.column = 0
@@ -64,21 +66,25 @@ class excel_item(object):
             Reg_Class.reg_filed_num = len(column_list)  # 记录总的field
             # 使用extend，将前一个list的元素依次放入，如果用append,则是将List作为一个element 放入队列
             Reg_Class.field_name_list.extend(column_list)
-            print(Reg_Class.__dict__)
-            print(Reg_Class.field_name_list)
+            log.logger.debug("start to parse excel ")
+            log.logger.debug(Reg_Class.__dict__)
+            log.logger.debug(Reg_Class.field_name_list)
 
             if (("offset"  not in column_list) or ("RegName"  not in column_list)
                 or ("Width"  not in column_list) or ("FieldName"  not in column_list)
                 or ("Bit"  not in column_list)):
                 self.sheet_valid = False
+                log.logger.error("sheet is invalid，the start row's field doesn't satisfy the conditions")
                 return ("sheet 无效，起始行不包含全部指定的关键字，请检查起始行的值")
 
             else:
                 self.sheet_valid = True
                 self.column_valid_number = column_list.__len__()
+                log.logger.info("sheet is valid,pls go on ")
                 return ("sheet 格式检查合格，可以继续操作!")
 
         except Exception as err:
+            log.logger.error("the input start row is wrong ,pls check it ")
             return "输入的起始行有误，检查该行是否包含指定的关键字"
             pass
 
@@ -102,7 +108,7 @@ class excel_item(object):
 
 
         end_time = time.clock()
-        print("first row time:{} ".format(end_time - start_time))
+        log.logger.debug("first row time:{} ".format(end_time - start_time))
 
         start_time = time.clock()
         #判断行合并的情况
@@ -127,7 +133,7 @@ class excel_item(object):
             cell_item.cell_merge_row_num = merge_row_number + 1  # 加上第一行
 
             end_time = time.clock()
-            print("judge merge time:{}".format(end_time - start_time))
+            log.logger.debug("judge merge time:{}".format(end_time - start_time))
 
             # step2: 判断行合并，在当前版本中省略
 
@@ -168,11 +174,11 @@ class excel_item(object):
 
 
 
+
+
 '''
-
-
 excel_item = excel_item(r"dp_cc_reg.xlsx")
-excel_item.sheet_read(0)
+#excel_item.sheet_read(0)
 
 excel_item.format_check(excel_item.sheet,1,1)
 
